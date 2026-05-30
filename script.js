@@ -605,6 +605,40 @@
       };
 
       try {
+        // 1. Send data to Supabase Database
+        const supabaseUrl = "https://jkwvvkejsnupsbpeqpjk.supabase.co/rest/v1/submissions";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imprd3Z2a2Vqc251cHNicGVxcGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjA5MjgsImV4cCI6MjA5NTY5NjkyOH0.HmDqAtMdkC1hru1XoyvX1X1AUO9kMyqU-ym_gMsR9Ew";
+        
+        // Match the columns exactly as they would be generated from the CSV import
+        const dbData = {
+          name: document.getElementById('b-name').value,
+          email: document.getElementById('b-email').value,
+          company: document.getElementById('b-company').value,
+          "reference links": referenceEl ? referenceEl.value : "None provided",
+          message: document.getElementById('b-message').value,
+          "selected service": builderState.service || "None",
+          "selected package": builderState.packageTier || "None",
+          "reel count": builderState.reelsCount ? parseInt(builderState.reelsCount) : 0,
+          "reel types": builderState.reelTypes && builderState.reelTypes.length > 0 ? builderState.reelTypes.join(", ") : "None",
+          "date submitted": new Date().toISOString()
+        };
+
+        const dbResponse = await fetch(supabaseUrl, {
+          method: "POST",
+          headers: {
+            "apikey": supabaseKey,
+            "Authorization": `Bearer ${supabaseKey}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(dbData)
+        });
+
+        if (!dbResponse.ok) {
+          console.error("Failed to save to Supabase Database", await dbResponse.text());
+        }
+
+        // 2. Send data to Web3Forms for email notification
         const response = await fetch("https://api.web3forms.com/submit", {
           method: "POST",
           headers: {
