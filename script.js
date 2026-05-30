@@ -606,21 +606,21 @@
 
       try {
         // 1. Send data to Supabase Database
-        const supabaseUrl = "https://jkwvvkejsnupsbpeqpjk.supabase.co/rest/v1/submissions";
+        const supabaseUrl = "https://jkwvvkejsnupsbpeqpjk.supabase.co/rest/v1/submission";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imprd3Z2a2Vqc251cHNicGVxcGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjA5MjgsImV4cCI6MjA5NTY5NjkyOH0.HmDqAtMdkC1hru1XoyvX1X1AUO9kMyqU-ym_gMsR9Ew";
         
         // Match the columns exactly as they would be generated from the CSV import
         const dbData = {
-          name: document.getElementById('b-name').value,
-          email: document.getElementById('b-email').value,
-          company: document.getElementById('b-company').value,
-          "reference links": referenceEl ? referenceEl.value : "None provided",
-          message: document.getElementById('b-message').value,
-          "selected service": builderState.service || "None",
-          "selected package": builderState.packageTier || "None",
-          "reel count": builderState.reelsCount ? parseInt(builderState.reelsCount) : 0,
-          "reel types": builderState.reelTypes && builderState.reelTypes.length > 0 ? builderState.reelTypes.join(", ") : "None",
-          "date submitted": new Date().toISOString()
+          "Name": document.getElementById('b-name').value,
+          "Email": document.getElementById('b-email').value,
+          "Company": document.getElementById('b-company').value,
+          "Reference Links": referenceEl ? referenceEl.value : "None provided",
+          "Message": document.getElementById('b-message').value,
+          "Selected Service": builderState.service || "None",
+          "Selected Package": builderState.packageTier || "None",
+          "Reel Count": builderState.reelsCount ? parseInt(builderState.reelsCount) : 0,
+          "Reel Types": builderState.reelTypes && builderState.reelTypes.length > 0 ? builderState.reelTypes.join(", ") : "None",
+          "Date Submitted": new Date().toISOString()
         };
 
         const dbResponse = await fetch(supabaseUrl, {
