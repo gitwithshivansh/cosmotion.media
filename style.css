@@ -1630,15 +1630,77 @@ body::before {
 }
 
 @media (max-width: 768px) {
+  .packages-sticky-viewport {
+    height: 100dvh !important;
+  }
   .section--builder {
-    padding-bottom: 2rem !important;
+    padding-bottom: 1rem !important;
+    padding-top: 1rem !important;
+  }
+  .builder__container {
+    padding: 1rem 1.2rem !important;
+    border-radius: 14px !important;
+    max-width: 92% !important;
+  }
+  .builder__heading {
+    margin-bottom: 0.6rem !important;
+    font-size: 1.3rem !important;
+  }
+  .builder__form {
+    gap: 0.45rem !important;
+  }
+  .builder__form input,
+  .builder__form textarea,
+  .builder__form select {
+    padding: 0.55rem 0.75rem !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+  }
+  .builder__disclaimer {
+    margin-top: 0.3rem !important;
+    font-size: 0.75rem !important;
+  }
+  .builder__divider {
+    margin: 0.5rem 0 !important;
   }
   .footer-links {
-    margin-top: 1.5rem;
-    padding: 0;
-    max-width: 100%;
+    margin-top: 0.8rem !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    gap: 0.5rem !important;
   }
   .section__socials {
-    margin-top: 1rem;
+    margin-top: 0.6rem !important;
+  }
+  .btn-book-call-bottom {
+    padding: 0.7em 2em !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Video controls mobile alignment fixes */
+  .video-controls {
+    bottom: 1rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    padding: 0.4rem 0.8rem !important;
+    gap: 0.6rem !important;
+  }
+  .video-timeline-container {
+    gap: 0.6rem !important;
+  }
+  .video-timeline {
+    min-width: 0 !important;
+  }
+  .video-time {
+    min-width: 70px !important;
+    font-size: 0.75rem !important;
+  }
+  .video-control-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .video-control-btn svg {
+    width: 14px !important;
+    height: 14px !important;
   }
 }
