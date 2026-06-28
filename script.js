@@ -500,44 +500,7 @@
       };
  
       try {
-        // 1. Send data to Supabase Database (non-blocking — don't let DB failure stop email)
-        try {
-          const supabaseUrl = "https://jkwvvkejsnupsbpeqpjk.supabase.co/rest/v1/submission";
-          const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imprd3Z2a2Vqc251cHNicGVxcGprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjA5MjgsImV4cCI6MjA5NTY5NjkyOH0.HmDqAtMdkC1hru1XoyvX1X1AUO9kMyqU-ym_gMsR9Ew";
-        
-          // Match the columns exactly as they would be generated from the CSV import
-          const dbData = {
-            "Name": document.getElementById('b-name').value,
-            "Email": document.getElementById('b-email').value,
-            "Company": document.getElementById('b-company').value,
-            "Reference Links": referenceEl ? referenceEl.value : "None provided",
-            "Message": document.getElementById('b-message').value,
-            "Selected Service": selectedService,
-            "Selected Package": "None",
-            "Reel Count": 0,
-            "Reel Types": "None",
-            "Date Submitted": new Date().toISOString()
-          };
-
-          const dbResponse = await fetch(supabaseUrl, {
-            method: "POST",
-            headers: {
-              "apikey": supabaseKey,
-              "Authorization": `Bearer ${supabaseKey}`,
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
-            },
-            body: JSON.stringify(dbData)
-          });
-
-          if (!dbResponse.ok) {
-            console.error("Failed to save to Supabase Database", await dbResponse.text());
-          }
-        } catch (dbError) {
-          console.warn("Supabase DB save failed (project may be paused):", dbError.message);
-        }
-
-        // 2. Send data to Web3Forms for email notification
+        // Send data to Web3Forms for email notification
         const response = await fetch("https://api.web3forms.com/submit", {
           method: "POST",
           headers: {
