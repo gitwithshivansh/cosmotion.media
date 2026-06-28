@@ -1688,33 +1688,6 @@ body::before {
     font-size: 0.9rem !important;
   }
 
-  /* Hero Section: Disable scroll animation on mobile, stack text blocks */
-  .hero-sticky-track {
-    height: auto !important;
-    min-height: 100dvh !important;
-  }
-  .hero-sticky-viewport {
-    position: relative !important;
-    height: auto !important;
-    min-height: 100dvh !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    gap: 2.5rem !important;
-    padding: 6rem 1rem 3rem !important;
-  }
-  .hero__content {
-    position: static !important;
-    transform: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-  }
-  .hero__content--second {
-    transform: none !important;
-  }
-
   /* Video controls mobile alignment fixes */
   .video-controls {
     bottom: 1rem !important;
