@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>COSMOTION</title>
+  <title>COSMOTION — Premium Video Production</title>
   <meta name="description" content="Premium video production for products that deserve to be seen. Organic reels, explainer videos, and cinematic content.">
-  <link rel="stylesheet" href="style.css?v=2.8">
+  <link rel="stylesheet" href="style.css?v=4.6">
 
 </head>
 <body>
@@ -17,37 +17,94 @@
   <main id="scroll-container">
 
     <!-- Section 1 — Hero -->
-    <section id="hero" class="section section--hero">
-      <div class="hero__glow"></div>
-      <a href="#hero" class="site-logo">COSMOTION</a>
-      <div class="hero__content reveal">
-        <h1 class="hero__title">
-          <span class="hero__line gradient-text">Your product is great,</span>
-          <span class="hero__line hero__line--accent">Does anyone know it yet?</span>
-        </h1>
-      </div>
-    </section>
+    <!-- Hero Scroll Track (200vh) -->
+    <div id="hero-track" class="hero-sticky-track">
+      <section id="hero" class="hero-sticky-viewport">
+        <div class="hero__glow"></div>
+        <a href="#hero" class="site-logo">COSMOTION</a>
+        <a href="https://calendly.com/cosmotion-media/30min" target="_blank" rel="noopener noreferrer" class="btn-nav-call">Book a call</a>
+        
+        <!-- Text Block 1 -->
+        <div class="hero__content hero__content--first reveal">
+          <h1 class="hero__title">
+            <span class="hero__line gradient-text">Your product is great,</span>
+            <span class="hero__line hero__line--accent">Does anyone know it yet?</span>
+          </h1>
+        </div>
 
-    <!-- Section 2 — Video Showcase 1 -->
-    <section id="showreel" class="section section--video">
+        <!-- Text Block 2 -->
+        <div class="hero__content hero__content--second">
+          <h1 class="hero__title">
+            <span class="hero__line">We Direct and Produce</span>
+            <span class="hero__line hero__line--accent">Explainer and Launch Films</span>
+            <span class="hero__line">for Tech and SaaS.</span>
+          </h1>
+        </div>
+      </section>
+    </div>
+
+    <!-- Section 2 — Product Launch Film -->
+    <section id="launch-film-custom" class="section section--video">
       <div class="video-wrapper">
-        <iframe id="yt-player-1" class="video-bg video-bg--yt"
-          src="https://www.youtube.com/embed/SsaZRNur5Ik?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playlist=SsaZRNur5Ik&playsinline=1&enablejsapi=1"
+        <!-- Placeholder Video -->
+        <iframe id="yt-player-launch" class="video-bg video-bg--yt"
+          src="https://www.youtube.com/embed/zpYT5F6WMVg?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
           frameborder="0"
           allow="autoplay; encrypted-media"
           allowfullscreen
           loading="lazy"
-          title="Product Video">
+          title="Product Launch Film"
+          aria-hidden="true"
+          tabindex="-1">
         </iframe>
+        <div class="video-shield"></div>
         <div class="video-overlay"></div>
         <div class="video-info reveal">
-          <h2 class="video-title">Product Video</h2>
-          <p class="video-subtitle">Videos that help pitch, sell, and onboard faster</p>
+          <h2 class="video-title">Product Launch Film</h2>
+          <p class="video-subtitle">Launch films that make people feel your product.</p>
+        </div>
+        <div class="video-controls">
+          <button class="video-control-btn video-play-btn" data-player="yt-player-launch" data-playing="true" aria-label="Pause video">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          <div class="video-timeline-container">
+            <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-launch" aria-label="Video timeline">
+            <span class="video-time" data-player="yt-player-launch">0:00 / 0:00</span>
+          </div>
+          <button class="video-control-btn video-mute-btn" data-player="yt-player-launch" data-muted="true" aria-label="Unmute video">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 — Video Showcase 1 -->
+    <section id="showreel" class="section section--video">
+      <div class="video-wrapper">
+        <iframe id="yt-player-1" class="video-bg video-bg--yt"
+          src="https://www.youtube.com/embed/SsaZRNur5Ik?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          loading="lazy"
+          title="Velozity Product Video"
+          aria-hidden="true"
+          tabindex="-1">
+        </iframe>
+        <div class="video-shield"></div>
+        <div class="video-overlay"></div>
+        <div class="video-info reveal">
+          <h2 class="video-title">Product Explainer Video</h2>
+          <p class="video-subtitle">Videos that help <span>Velozity</span> pitch, sell, and onboard faster</p>
         </div>
         <div class="video-controls">
           <button class="video-control-btn video-play-btn" data-player="yt-player-1" data-playing="true" aria-label="Pause video">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
           </button>
+          <div class="video-timeline-container">
+            <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-1" aria-label="Video timeline">
+            <span class="video-time" data-player="yt-player-1">0:00 / 0:00</span>
+          </div>
           <button class="video-control-btn video-mute-btn" data-player="yt-player-1" data-muted="true" aria-label="Unmute video">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
           </button>
@@ -59,13 +116,16 @@
     <section id="brand-film" class="section section--video">
       <div class="video-wrapper">
         <iframe id="yt-player-2" class="video-bg video-bg--yt"
-          src="https://www.youtube.com/embed/F7wu34PtSn0?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playlist=F7wu34PtSn0&playsinline=1&enablejsapi=1"
+          src="https://www.youtube.com/embed/F7wu34PtSn0?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
           frameborder="0"
           allow="autoplay; encrypted-media"
           allowfullscreen
           loading="lazy"
-          title="SaaS Animation">
+          title="SaaS Animation"
+          aria-hidden="true"
+          tabindex="-1">
         </iframe>
+        <div class="video-shield"></div>
         <div class="video-overlay"></div>
         <div class="video-info reveal">
           <h2 class="video-title gradient-text">SaaS Animation</h2>
@@ -75,6 +135,10 @@
           <button class="video-control-btn video-play-btn" data-player="yt-player-2" data-playing="true" aria-label="Pause video">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
           </button>
+          <div class="video-timeline-container">
+            <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-2" aria-label="Video timeline">
+            <span class="video-time" data-player="yt-player-2">0:00 / 0:00</span>
+          </div>
           <button class="video-control-btn video-mute-btn" data-player="yt-player-2" data-muted="true" aria-label="Unmute video">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
           </button>
@@ -82,256 +146,130 @@
       </div>
     </section>
 
-    <!-- Section 4 — Vertical Reels -->
-    <section id="reels" class="section section--reels">
-      <div class="reels__glow"></div>
-      <div class="reels__header reveal">
-        <h2 class="reels__title gradient-text">Organic Reels That Actually Work</h2>
-        <p class="reels__subtitle">Reels that sell while building your brand presence.</p>
-      </div>
-      <div class="reels__container reveal">
-        <div class="reel-card">
-          <div class="reel-card__glow"></div>
 
-          <div class="reel-card__video reel-card__video--ig">
-            <iframe
-              src="https://www.instagram.com/reel/DW_epTfP49D/embed/"
-              frameborder="0"
-              scrolling="no"
-              allowtransparency="true"
-              allow="autoplay; encrypted-media"
-              loading="lazy">
-            </iframe>
-          </div>
-          <h3 class="reel-card__title">1.6M+ views</h3>
-        </div>
-        <div class="reel-card">
-          <div class="reel-card__glow"></div>
-
-          <div class="reel-card__video reel-card__video--ig">
-            <iframe
-              src="https://www.instagram.com/reel/DV_WKkcCBlN/embed/"
-              frameborder="0"
-              scrolling="no"
-              allowtransparency="true"
-              allow="autoplay; encrypted-media"
-              loading="lazy">
-            </iframe>
-          </div>
-          <h3 class="reel-card__title">1M+ views</h3>
-        </div>
-        <div class="reel-card">
-          <div class="reel-card__glow"></div>
-
-          <div class="reel-card__video reel-card__video--ig">
-            <iframe
-              src="https://www.instagram.com/reel/DXPM3lykgSc/embed/"
-              frameborder="0"
-              scrolling="no"
-              allowtransparency="true"
-              allow="autoplay; encrypted-media"
-              loading="lazy">
-            </iframe>
-          </div>
-          <h3 class="reel-card__title">633k+ views</h3>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 5 — Why Work With Us -->
+    <!-- Section 5 — Flight Plan (FAQ) -->
     <section id="process" class="section section--process">
       <div class="process__glow"></div>
       <div class="process__content">
-        <h2 class="process__heading reveal gradient-text">Why Work With Us?</h2>
-        <div class="process__steps">
-          <div class="process__step reveal">
-            <span class="step__number">01</span>
-            <div class="step__text">
-              <h3 class="step__title">We Speak Startup</h3>
-              <p class="step__desc">We get SaaS. No lengthy briefings needed.</p>
+        <h2 class="process__heading reveal gradient-text">Flight Plan</h2>
+        <div class="faq__container reveal">
+          
+          <div class="faq__item">
+            <button class="faq__header" aria-expanded="false">
+              <span class="faq__question">What's the turnaround time for a project?</span>
+              <span class="faq__icon">+</span>
+            </button>
+            <div class="faq__body">
+              <div class="faq__answer">
+                Most projects wrap in 5–10 business days from kickoff to final delivery. If you're on a tight timeline, we offer expedited turnarounds.
+              </div>
             </div>
           </div>
+          
           <div class="process__glow-accent"></div>
-          <div class="process__step reveal">
-            <span class="step__number">02</span>
-            <div class="step__text">
-              <h3 class="step__title">Results You Can See</h3>
-              <p class="step__desc">Velozity.ai — few hundred to avg 3M+ monthly organic views</p>
+          
+          <div class="faq__item">
+            <button class="faq__header" aria-expanded="false">
+              <span class="faq__question">How is a launch film different from a regular promo video?</span>
+              <span class="faq__icon">+</span>
+            </button>
+            <div class="faq__body">
+              <div class="faq__answer">
+                A launch film is emotional and cinematic. It connects. A regular promo video just explains features. We focus on feeling first.
+              </div>
             </div>
           </div>
+          
           <div class="process__glow-accent"></div>
-          <div class="process__step reveal">
-            <span class="step__number">03</span>
-            <div class="step__text">
-              <h3 class="step__title">Complex Made Simple</h3>
-              <p class="step__desc">We turn complicated products into stories anyone understands in 60 seconds.</p>
+          
+          <div class="faq__item">
+            <button class="faq__header" aria-expanded="false">
+              <span class="faq__question">How does the process work?</span>
+              <span class="faq__icon">+</span>
+            </button>
+            <div class="faq__body">
+              <div class="faq__answer">
+                You share your product and vision. We define direction, tone, and structure. Then we produce and deliver.
+              </div>
             </div>
           </div>
+          
           <div class="process__glow-accent"></div>
-          <div class="process__step reveal">
-            <span class="step__number">04</span>
-            <div class="step__text">
-              <h3 class="step__title">Deadlines Are Not Suggestions</h3>
-              <p class="step__desc">We set a date. We deliver on it. Every time.</p>
+          
+          <div class="faq__item">
+            <button class="faq__header" aria-expanded="false">
+              <span class="faq__question">How much does a launch film cost?</span>
+              <span class="faq__icon">+</span>
+            </button>
+            <div class="faq__body">
+              <div class="faq__answer">
+                We charge for what it takes to make something that performs — not by the hour, not by guesswork. Let's talk specifics.
+              </div>
             </div>
           </div>
-          <div class="process__glow-accent"></div>
-          <div class="process__step reveal">
-            <span class="step__number">05</span>
-            <div class="step__text">
-              <h3 class="step__title">You're Never Left Guessing</h3>
-              <p class="step__desc">Regular updates at every stage. No radio silence.</p>
-            </div>
-          </div>
-          <div class="process__glow-accent"></div>
-          <div class="process__step reveal">
-            <span class="step__number">06</span>
-            <div class="step__text">
-              <h3 class="step__title">One Team, Full Stack</h3>
-              <p class="step__desc">Script to final delivery — everything under one roof.</p>
-            </div>
-          </div>
+          
         </div>
       </div>
     </section>
 
-    <!-- Section 6 — Package Builder -->
-    <section id="packages" class="section section--builder">
-      <div class="builder__glow"></div>
+    <div id="packages-track" class="section packages-sticky-track">
+      <section id="packages" class="packages-sticky-viewport section--builder">
+        <div class="builder__glow"></div>
       <div class="builder__container reveal">
         
-        <div class="builder__header">
-          <button type="button" class="builder__back-btn hidden" id="btn-back-arrow" aria-label="Go back">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-          </button>
-          <div class="builder__progress">
-            <div class="builder__progress-bar"><div class="builder__progress-fill" id="progress-fill"></div></div>
-            <div class="builder__progress-text" id="progress-text">Step 1 of 3</div>
-          </div>
-        </div>
-
-        <!-- Step 1: Service Selection -->
-        <div class="builder__step builder__step--active" id="step-1">
-          <h2 class="builder__heading">What are you looking for?</h2>
-          <div class="builder__cards builder__cards--3">
-            <div class="builder-card" data-step="1" data-value="SaaS Animation">
-              <h3 class="builder-card__title">SaaS Animation</h3>
-            </div>
-            <div class="builder-card" data-step="1" data-value="Product Explainer Video">
-              <h3 class="builder-card__title">Product Explainer Video</h3>
-            </div>
-            <div class="builder-card" data-step="1" data-value="Organic Reel Content">
-              <h3 class="builder-card__title">Organic Reel Content</h3>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 2A: Package Detail (SaaS/Product) -->
-        <div class="builder__step" id="step-2a">
-          <h2 class="builder__heading">Choose your package.</h2>
-          <div class="builder__cards builder__cards--2">
-            <div class="builder-card builder-card--detailed" data-step="2a" data-value="Media">
-              <h3 class="builder-card__title">Media</h3>
-              <ul class="builder-card__list">
-                <li>Under 60 sec</li>
-                <li>UI/UX Animation</li>
-                <li>B-roll and Motion Typography</li>
-                <li>Basic Sound Design</li>
-                <li>2 Revision Rounds</li>
-                <li>No script writing or storyboarding</li>
-              </ul>
-            </div>
-            <div class="builder-card builder-card--detailed" data-step="2a" data-value="Pro">
-              <h3 class="builder-card__title">Pro</h3>
-              <ul class="builder-card__list">
-                <li>Up to 2 min</li>
-                <li>UI/UX Animation</li>
-                <li>B-roll and Motion Typography</li>
-                <li>Advanced Sound Design</li>
-                <li>Script Writing</li>
-                <li>Full Storyboarding</li>
-                <li>3 Revision Rounds</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 2B: Reel Customization -->
-        <div class="builder__step" id="step-2b">
-          <h2 class="builder__heading">Customize your reel package.</h2>
-          
-          <div class="builder__option-group">
-            <h3 class="builder__subheading">How many reels per month?</h3>
-            <div class="builder__pills" id="reels-count-options">
-              <button class="builder-pill" data-group="reelsCount" data-value="4">4</button>
-              <button class="builder-pill" data-group="reelsCount" data-value="8">8</button>
-              <button class="builder-pill" data-group="reelsCount" data-value="12">12</button>
-              <button class="builder-pill" data-group="reelsCount" data-value="Custom">Custom</button>
-            </div>
-            <div class="builder__custom-input hidden" id="custom-count-wrapper">
-              <input type="number" id="custom-count" min="1" placeholder="Enter number of reels">
-            </div>
-          </div>
-
-          <div class="builder__option-group">
-            <h3 class="builder__subheading">What type of content?</h3>
-            <div class="builder__pills" id="reels-type-options">
-              <button class="builder-pill builder-pill--multi" data-group="reelTypes" data-value="Product Reel">Product Reel</button>
-              <button class="builder-pill builder-pill--multi" data-group="reelTypes" data-value="UGC Style">UGC Style</button>
-              <button class="builder-pill builder-pill--multi" data-group="reelTypes" data-value="Meme and Trend Format">Meme and Trend Format</button>
-              <button class="builder-pill builder-pill--multi" data-group="reelTypes" data-value="Mix of All">Mix of All</button>
-            </div>
-          </div>
-          <div class="builder__actions" style="margin-top: 2rem; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn btn--primary disabled" id="btn-continue-reels" disabled style="padding: 0.8rem 2.2rem; min-width: 140px;">Continue →</button>
-          </div>
-        </div>
-
-        <!-- Step 3: Summary and Contact -->
-        <div class="builder__step" id="step-3">
-          <h2 class="builder__heading">Here's what you've selected.</h2>
-          <div class="builder__summary" id="builder-summary">
-            <!-- Dynamic content injected here -->
-          </div>
+        <div class="builder__step builder__step--active" id="step-3">
+          <h2 class="builder__heading">Let's collaborate and build something together</h2>
           
           <form class="builder__form" id="builder-form">
             <div class="form__row">
               <input type="text" id="b-name" placeholder="Name" required>
               <input type="email" id="b-email" placeholder="Email" required>
             </div>
+            
+            <select id="b-service" class="form__select" required>
+              <option value="" disabled selected hidden>Select Video Type</option>
+              <option value="Launch Film">Launch Film</option>
+              <option value="Product Explainer">Product Explainer</option>
+              <option value="SaaS Video">SaaS Video</option>
+            </select>
+
             <input type="text" id="b-company" placeholder="What best describes you?" required>
-            <input type="text" id="b-reference" placeholder="Reference Video Links (Optional)">
-            <textarea id="b-message" rows="3" placeholder="Message" required></textarea>
-            <button type="submit" class="btn btn--primary btn--full">Get Custom Quote</button>
-            <p class="builder__disclaimer">We'll send you a custom quote within 24 hours.</p>
+            <textarea id="b-message" rows="2" placeholder="Describe about your project" required></textarea>
+            <button type="submit" class="btn btn--primary btn--full">Send Inquiry</button>
+            <p class="builder__disclaimer">We'll get back to you within 24 hours.</p>
           </form>
           <div class="builder__success hidden" id="builder-success">
             <h3>We got your request. Talk soon.</h3>
           </div>
         </div>
 
-        <!-- Navigation removed as we now use auto-forward, back arrow, and inline continue -->
-
       </div>
 
-      <!-- Social Icons -->
-      <div class="section__socials">
-        <a href="https://www.instagram.com/cosmotion.media?igsh=czhweWtlZ2ZmdTd5&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="Instagram">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-        </a>
-        <a href="https://www.linkedin.com/company/cosmotion-media/" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="LinkedIn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-        </a>
+      <!-- Footer Links Group — animates with COSMOTION logo -->
+      <div class="footer-links" id="footer-links">
+        <div class="builder__divider" style="width: 100%;"><span>OR</span></div>
+        <a href="https://calendly.com/cosmotion-media/30min" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--full btn-book-call-bottom">Book a Call</a>
+        <div class="section__socials">
+          <a href="https://x.com/shivansh1872892?s=11" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="X">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
+              <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
+            </svg>
+          </a>
+          <a href="https://www.instagram.com/cosmotion.media?igsh=czhweWtlZ2ZmdTd5&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/cosmotion-media/?viewAsMember=true" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
       </div>
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=cosmotion.media@gmail.com" target="_blank" rel="noopener noreferrer" class="footer__email">cosmotion.media@gmail.com</a>
-      <span class="site-logo--halfcut">COSMOTION</span>
+      <span class="site-logo--halfcut" id="footer-logo">COSMOTION</span>
     </section>
+  </div>
 
   </main>
 
-  <script src="script.js?v=2.2"></script>
+  <script src="script.js?v=4.8"></script>
 </body>
 </html>

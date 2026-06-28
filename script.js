@@ -10,10 +10,17 @@
   const ctx = canvas.getContext('2d');
   let stars = [];
   let animFrame;
+  let cw, ch;
 
   function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    cw = window.innerWidth;
+    ch = window.innerHeight;
+    canvas.width = cw * dpr;
+    canvas.height = ch * dpr;
+    canvas.style.width = cw + 'px';
+    canvas.style.height = ch + 'px';
+    ctx.scale(dpr, dpr);
   }
 
   class ShootingStar {
@@ -22,21 +29,16 @@
     }
 
     reset() {
-      // Random start position along top or right edge
-      const edge = Math.random();
-      if (edge < 0.6) {
-        // From top
-        this.x = Math.random() * canvas.width * 1.2;
-        this.y = -10;
-      } else {
-        // From right
-        this.x = canvas.width + 10;
-        this.y = Math.random() * canvas.height * 0.5;
-      }
+      // Since stars fade in very softly over 5 seconds, we can safely spawn them 
+      // anywhere on the screen rather than strictly on the edges.
+      // This guarantees an perfectly even distribution of stars everywhere.
+      this.x = Math.random() * cw;
+      this.y = Math.random() * ch * 0.8; // Spawn anywhere in the top 80% of screen
 
-      this.len = 160 + Math.random() * 200;
-      this.speed = 0.3 + Math.random() * 0.5;
-      this.angle = (Math.PI / 4) + (Math.random() * 0.4 - 0.2); // ~45 degrees with variation
+      this.len = 400 + Math.random() * 500; // Much longer tails
+      // Reduce speed so they move slower and more elegantly
+      this.speed = 0.15 + Math.random() * 0.25;
+      this.angle = (Math.PI / 4) + (Math.random() * 0.3 - 0.15); // ~45 degrees (down-right)
 
       this.vx = Math.cos(this.angle) * this.speed;
       this.vy = Math.sin(this.angle) * this.speed;
@@ -45,13 +47,15 @@
       this.maxOpacity = 0.25 + Math.random() * 0.45;
       this.phase = 'in'; // 'in', 'full', 'out'
       this.life = 0;
-      this.maxLife = 400 + Math.random() * 400;
+      // Stars must live long enough to cross a 2000px screen at slow speed
+      // If speed is ~0.2 px/frame, screen cross takes ~10000 frames
+      this.maxLife = 6000 + Math.random() * 6000;
       this.thickness = 0.8 + Math.random() * 1.2;
 
       // Subtle warm tint
       const warmth = Math.random();
       if (warmth < 0.3) {
-        this.color = [232, 146, 58]; // Orange accent
+        this.color = [154, 140, 191]; // Lavender accent
       } else if (warmth < 0.5) {
         this.color = [180, 160, 220]; // Soft violet
       } else {
@@ -65,14 +69,17 @@
       this.life++;
 
       // Fade phases
-      const fadeIn = 60;
-      const fadeOut = 80;
+      const fadeIn = 300; // ~5 seconds to fade in
+      const fadeOut = 400; // ~6 seconds to fade out
       if (this.life < fadeIn) {
         this.phase = 'in';
-        this.opacity = (this.life / fadeIn) * this.maxOpacity;
+        // Use ease-in out curve for opacity instead of linear for a smoother look
+        const progress = this.life / fadeIn;
+        this.opacity = (progress * progress) * this.maxOpacity;
       } else if (this.life > this.maxLife - fadeOut) {
         this.phase = 'out';
-        this.opacity = ((this.maxLife - this.life) / fadeOut) * this.maxOpacity;
+        const progress = (this.maxLife - this.life) / fadeOut;
+        this.opacity = (progress * progress) * this.maxOpacity;
       } else {
         this.phase = 'full';
         this.opacity = this.maxOpacity;
@@ -81,8 +88,8 @@
       // Off screen or life ended
       if (
         this.life >= this.maxLife ||
-        this.x > canvas.width + 200 ||
-        this.y > canvas.height + 200 ||
+        this.x > cw + 200 ||
+        this.y > ch + 200 ||
         this.x < -200
       ) {
         this.reset();
@@ -122,11 +129,11 @@
 
   function createBgStars() {
     bgStars = [];
-    const count = Math.floor((canvas.width * canvas.height) / 8000);
+    const count = Math.floor((cw * ch) / 8000);
     for (let i = 0; i < count; i++) {
       bgStars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * cw,
+        y: Math.random() * ch,
         r: Math.random() * 1.2,
         opacity: 0.1 + Math.random() * 0.4,
         twinkleSpeed: 0.005 + Math.random() * 0.015,
@@ -137,7 +144,7 @@
 
   function initStars() {
     stars = [];
-    const count = 8; // Active shooting stars
+    const count = 3; // Reduced for a minimalist, cinematic feel
     for (let i = 0; i < count; i++) {
       const s = new ShootingStar();
       s.life = Math.floor(Math.random() * s.maxLife); // Stagger
@@ -156,7 +163,7 @@
   }
 
   function animate(time) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, cw, ch);
 
     drawBgStars(time);
 
@@ -250,15 +257,74 @@
   window.onYouTubeIframeAPIReady = function() {
     const players = {};
     const iframes = document.querySelectorAll('.video-bg--yt');
+    const scrubberIntervals = {};
+
+    function formatTime(sec) {
+      if (isNaN(sec) || sec === Infinity || sec < 0) return "0:00";
+      const minutes = Math.floor(sec / 60);
+      const seconds = Math.floor(sec % 60);
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
     
-    iframes.forEach((iframe) => {
+      iframes.forEach((iframe) => {
       const playerId = iframe.id;
       if (playerId) {
         players[playerId] = new YT.Player(playerId, {
           events: {
             'onReady': function(event) {
               const ytPlayer = players[playerId];
+              // Force highest resolution (1080p / highres) so it buffers instead of auto-downscaling
+              event.target.setPlaybackQuality('highres');
+              event.target.setPlaybackQuality('hd1080');
               
+              const scrubber = document.querySelector(`.video-timeline[data-player="${playerId}"]`);
+              const timeDisplay = document.querySelector(`.video-time[data-player="${playerId}"]`);
+
+              function startUpdateLoop() {
+                if (scrubberIntervals[playerId]) return;
+                scrubberIntervals[playerId] = setInterval(() => {
+                  if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function' && typeof ytPlayer.getDuration === 'function') {
+                    const current = ytPlayer.getCurrentTime();
+                    const duration = ytPlayer.getDuration();
+                    if (duration > 0 && scrubber && timeDisplay) {
+                      scrubber.value = (current / duration) * 100;
+                      timeDisplay.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+                    }
+                  }
+                }, 250);
+              }
+
+              function stopUpdateLoop() {
+                if (scrubberIntervals[playerId]) {
+                  clearInterval(scrubberIntervals[playerId]);
+                  delete scrubberIntervals[playerId];
+                }
+              }
+
+              // Toggle play/pause when clicking the transparent video shield covering the iframe
+              const wrapper = iframe.closest('.video-wrapper');
+              const shield = wrapper ? wrapper.querySelector('.video-shield') : null;
+              if (shield) {
+                shield.addEventListener('click', function() {
+                  const state = ytPlayer.getPlayerState();
+                  const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
+                  if (state === 1) { // playing
+                    ytPlayer.pauseVideo();
+                    if (playBtn) {
+                      playBtn.dataset.playing = "false";
+                      playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
+                    }
+                  } else {
+                    ytPlayer.playVideo();
+                    if (playBtn) {
+                      playBtn.dataset.playing = "true";
+                      playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                    }
+                  }
+                });
+              }
+
+
               // Mute Toggle Logic
               const muteBtn = document.querySelector(`.video-mute-btn[data-player="${playerId}"]`);
               if (muteBtn) {
@@ -292,6 +358,90 @@
                   }
                 });
               }
+
+              // Scrubber Drag Event Listeners
+              if (scrubber) {
+                scrubber.addEventListener('input', function() {
+                  stopUpdateLoop();
+                  const pct = parseFloat(scrubber.value);
+                  const duration = ytPlayer.getDuration();
+                  if (duration > 0) {
+                    const targetSec = (pct / 100) * duration;
+                    if (timeDisplay) {
+                      timeDisplay.textContent = `${formatTime(targetSec)} / ${formatTime(duration)}`;
+                    }
+                    // Seek immediately (allowSeekAhead=false is fast and performs local seeking within buffered data)
+                    ytPlayer.seekTo(targetSec, false);
+                  }
+                });
+
+                scrubber.addEventListener('change', function() {
+                  const pct = parseFloat(scrubber.value);
+                  const duration = ytPlayer.getDuration();
+                  if (duration > 0) {
+                    const targetSec = (pct / 100) * duration;
+                    // Final seek (allowSeekAhead=true requests a fresh keyframe at the release coordinate)
+                    ytPlayer.seekTo(targetSec, true);
+                  }
+                  startUpdateLoop();
+                });
+              }
+
+              // Initial update loop check
+              if (ytPlayer.getPlayerState() === 1) {
+                startUpdateLoop();
+              }
+            },
+            'onStateChange': function(event) {
+              const ytPlayer = event.target;
+              const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
+              
+              if (event.data === YT.PlayerState.ENDED) {
+                // Programmatic Loop to avoid using playlist URL parameters (which cause skip button overlays on mobile)
+                ytPlayer.seekTo(0);
+                ytPlayer.playVideo();
+                return;
+              }
+
+              if (event.data === YT.PlayerState.PLAYING) {
+                event.target.setPlaybackQuality('highres');
+                event.target.setPlaybackQuality('hd1080');
+                
+                // Update Play Icon to Pause
+                if (playBtn) {
+                  playBtn.dataset.playing = "true";
+                  playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                }
+
+                // Start updating scrubber
+                const scrubber = document.querySelector(`.video-timeline[data-player="${playerId}"]`);
+                const timeDisplay = document.querySelector(`.video-time[data-player="${playerId}"]`);
+                
+                if (!scrubberIntervals[playerId]) {
+                  scrubberIntervals[playerId] = setInterval(() => {
+                    if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function' && typeof ytPlayer.getDuration === 'function') {
+                      const current = ytPlayer.getCurrentTime();
+                      const duration = ytPlayer.getDuration();
+                      if (duration > 0 && scrubber && timeDisplay) {
+                        scrubber.value = (current / duration) * 100;
+                        timeDisplay.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+                      }
+                    }
+                  }, 250);
+                }
+              } else {
+                // Update Play Icon to Play
+                if (playBtn && event.data !== YT.PlayerState.BUFFERING) {
+                  playBtn.dataset.playing = "false";
+                  playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
+                }
+
+                // Stop updating scrubber
+                if (scrubberIntervals[playerId]) {
+                  clearInterval(scrubberIntervals[playerId]);
+                  delete scrubberIntervals[playerId];
+                }
+              }
             }
           }
         });
@@ -309,272 +459,7 @@
       document.body.appendChild(tag);
   }
 
-  // ─── PACKAGE BUILDER LOGIC ──────────────────────────────
-  const builderState = {
-    step: 1,
-    service: null,
-    packageTier: null,
-    reelsCount: null,
-    reelTypes: []
-  };
-
-  const steps = [
-    document.getElementById('step-1'),
-    document.getElementById('step-2a'),
-    document.getElementById('step-2b'),
-    document.getElementById('step-3')
-  ];
-
-  const btnNext = document.getElementById('btn-next');
-  const btnBack = document.getElementById('btn-back-arrow');
-  const progressFill = document.getElementById('progress-fill');
-  const progressText = document.getElementById('progress-text');
-
-  function updateNav() {
-    // Show/hide back button
-    if (builderState.step === 1) {
-      if (btnBack) btnBack.classList.add('hidden');
-    } else {
-      if (btnBack) btnBack.classList.remove('hidden');
-    }
-
-    // Hide navigation entirely if form submitted
-    if (document.getElementById('builder-form').classList.contains('hidden')) {
-      if (btnNext) btnNext.classList.add('hidden');
-      if (btnBack) btnBack.classList.add('hidden');
-      return;
-    } else {
-      if (btnNext) btnNext.classList.remove('hidden');
-    }
-
-    // Change Next text on final step
-    if (builderState.step === 3) {
-      if (btnNext) btnNext.classList.add('hidden'); // We use the form submit button instead
-    } else {
-      if (btnNext) btnNext.classList.remove('hidden');
-      if (btnNext) btnNext.textContent = 'Next';
-    }
-
-    validateStep();
-  }
-
-  function validateStep() {
-    let isValid = false;
-    
-    if (builderState.step === 1) {
-      isValid = builderState.service !== null;
-    } else if (builderState.step === 2) {
-      if (builderState.service === 'Organic Reel Content') {
-        const hasCount = builderState.reelsCount !== null && builderState.reelsCount !== '';
-        const hasTypes = builderState.reelTypes.length > 0;
-        isValid = hasCount && hasTypes;
-      } else {
-        isValid = builderState.packageTier !== null;
-      }
-    } else if (builderState.step === 3) {
-      isValid = true;
-    }
-
-    // Update Step 2B inline Continue button if present
-    const btnContinue = document.getElementById('btn-continue-reels');
-    if (btnContinue) {
-      if (isValid) {
-        btnContinue.classList.remove('disabled');
-        btnContinue.removeAttribute('disabled');
-      } else {
-        btnContinue.classList.add('disabled');
-        btnContinue.setAttribute('disabled', 'true');
-      }
-    }
-
-    if (btnNext) {
-      if (isValid) {
-        btnNext.classList.remove('disabled');
-        btnNext.removeAttribute('disabled');
-      } else {
-        btnNext.classList.add('disabled');
-        btnNext.setAttribute('disabled', 'true');
-      }
-    }
-  }
-
-  function renderStep() {
-    // Hide all steps
-    steps.forEach(s => {
-      if (s) s.classList.remove('builder__step--active');
-    });
-
-    let currentStepEl;
-    let visualStep = builderState.step;
-
-    if (builderState.step === 1) {
-      currentStepEl = steps[0];
-    } else if (builderState.step === 2) {
-      if (builderState.service === 'Organic Reel Content') {
-        currentStepEl = steps[2]; // 2b
-      } else {
-        currentStepEl = steps[1]; // 2a
-      }
-    } else if (builderState.step === 3) {
-      currentStepEl = steps[3];
-      generateSummary();
-    }
-
-    if (currentStepEl) {
-      currentStepEl.classList.add('builder__step--active');
-    }
-
-    // Update Progress
-    const pct = ((visualStep - 1) / 2) * 100;
-    if (progressFill) progressFill.style.width = `${pct}%`;
-    if (progressText) progressText.textContent = `Step ${visualStep} of 3`;
-
-    updateNav();
-  }
-
-  function generateSummary() {
-    const summaryContainer = document.getElementById('builder-summary');
-    if (!summaryContainer) return;
-
-    let html = '';
-    
-    html += `<div class="summary-item"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Service: ${builderState.service}</div>`;
-
-    if (builderState.service === 'Organic Reel Content') {
-      html += `<div class="summary-item"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Quantity: ${builderState.reelsCount} reels/month</div>`;
-      html += `<div class="summary-item"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Content Style: ${builderState.reelTypes.join(', ')}</div>`;
-    } else {
-      html += `<div class="summary-item"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Package Tier: ${builderState.packageTier}</div>`;
-    }
-
-    summaryContainer.innerHTML = html;
-  }
-
-  // --- Event Listeners ---
-
-  // Next/Back
-  if (btnNext) {
-    btnNext.addEventListener('click', () => {
-      if (builderState.step < 3) {
-        builderState.step++;
-        renderStep();
-      }
-    });
-  }
-
-  if (btnBack) {
-    btnBack.addEventListener('click', () => {
-      if (builderState.step > 1) {
-        builderState.step--;
-        renderStep();
-      }
-    });
-  }
-
-  // Step 2B Continue Button
-  const btnContinue = document.getElementById('btn-continue-reels');
-  if (btnContinue) {
-    btnContinue.addEventListener('click', () => {
-      builderState.step = 3;
-      renderStep();
-    });
-  }
-
-  // Single Select Cards (Step 1 & 2A)
-  document.querySelectorAll('.builder-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      const stepEl = card.closest('.builder__cards');
-      
-      // Remove selected from siblings
-      stepEl.querySelectorAll('.builder-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-
-      const stepNum = card.dataset.step;
-      const value = card.dataset.value;
-
-      if (stepNum === '1') {
-        builderState.service = value;
-        // Reset step 2 states if service changes
-        builderState.packageTier = null;
-        builderState.reelsCount = null;
-        builderState.reelTypes = [];
-        document.querySelectorAll('#step-2a .builder-card').forEach(c => c.classList.remove('selected'));
-        document.querySelectorAll('#step-2b .builder-pill').forEach(c => c.classList.remove('selected'));
-        const customWrapper = document.getElementById('custom-count-wrapper');
-        const customInput = document.getElementById('custom-count');
-        if (customWrapper) customWrapper.classList.add('hidden');
-        if (customInput) customInput.value = '';
-        
-        // Auto-forward on card selection after visual click feedback delay
-        setTimeout(() => {
-          builderState.step = 2;
-          renderStep();
-        }, 220);
-      } else if (stepNum === '2a') {
-        builderState.packageTier = value;
-        
-        // Auto-forward on card selection after visual click feedback delay
-        setTimeout(() => {
-          builderState.step = 3;
-          renderStep();
-        }, 220);
-      }
-
-      validateStep();
-    });
-  });
-
-  // Pills (Step 2B)
-  document.querySelectorAll('.builder-pill').forEach(pill => {
-    pill.addEventListener('click', (e) => {
-      const group = pill.dataset.group;
-      const value = pill.dataset.value;
-      const isMulti = pill.classList.contains('builder-pill--multi');
-
-      if (!isMulti) {
-        // Single select group
-        const container = pill.closest('.builder__pills');
-        container.querySelectorAll('.builder-pill').forEach(p => p.classList.remove('selected'));
-        pill.classList.add('selected');
-
-        if (group === 'reelsCount') {
-          const customWrapper = document.getElementById('custom-count-wrapper');
-          if (value === 'Custom') {
-            builderState.reelsCount = document.getElementById('custom-count').value || null;
-            if (customWrapper) customWrapper.classList.remove('hidden');
-          } else {
-            builderState.reelsCount = value;
-            if (customWrapper) customWrapper.classList.add('hidden');
-          }
-        }
-      } else {
-        // Multi select group
-        pill.classList.toggle('selected');
-        if (group === 'reelTypes') {
-          if (pill.classList.contains('selected')) {
-            if (!builderState.reelTypes.includes(value)) {
-              builderState.reelTypes.push(value);
-            }
-          } else {
-            builderState.reelTypes = builderState.reelTypes.filter(t => t !== value);
-          }
-        }
-      }
-
-      validateStep();
-    });
-  });
-
-  // Custom Count Input
-  const customCountInput = document.getElementById('custom-count');
-  if (customCountInput) {
-    customCountInput.addEventListener('input', (e) => {
-      builderState.reelsCount = e.target.value;
-      validateStep();
-    });
-  }
-
-  // Form Submit
+  // ─── CONTACT FORM SUBMIT ──────────────────────────────
   const builderForm = document.getElementById('builder-form');
   if (builderForm) {
     builderForm.addEventListener('submit', async (e) => {
@@ -587,23 +472,24 @@
       submitBtn.disabled = true;
 
       const referenceEl = document.getElementById('b-reference');
+      const selectedService = document.getElementById('b-service').value || "None";
       
       // Prepare data to send
       const formData = {
         access_key: "6cda8b8d-f38a-4e60-ba33-a73cd759690a",
         subject: "New Custom Quote Request",
-        from_name: "Antigravity Package Builder",
+        from_name: "Antigravity Quote Request",
         name: document.getElementById('b-name').value,
         email: document.getElementById('b-email').value,
         company: document.getElementById('b-company').value,
         reference_links: referenceEl ? referenceEl.value : "None provided",
         message: document.getElementById('b-message').value,
-        selected_service: builderState.service || "None",
-        selected_package: builderState.packageTier || "None",
-        reel_count: builderState.reelsCount || "None",
-        reel_types: builderState.reelTypes && builderState.reelTypes.length > 0 ? builderState.reelTypes.join(", ") : "None"
+        selected_service: selectedService,
+        selected_package: "None",
+        reel_count: "None",
+        reel_types: "None"
       };
-
+ 
       try {
         // 1. Send data to Supabase Database
         const supabaseUrl = "https://jkwvvkejsnupsbpeqpjk.supabase.co/rest/v1/submission";
@@ -616,10 +502,10 @@
           "Company": document.getElementById('b-company').value,
           "Reference Links": referenceEl ? referenceEl.value : "None provided",
           "Message": document.getElementById('b-message').value,
-          "Selected Service": builderState.service || "None",
-          "Selected Package": builderState.packageTier || "None",
-          "Reel Count": builderState.reelsCount ? parseInt(builderState.reelsCount) : 0,
-          "Reel Types": builderState.reelTypes && builderState.reelTypes.length > 0 ? builderState.reelTypes.join(", ") : "None",
+          "Selected Service": selectedService,
+          "Selected Package": "None",
+          "Reel Count": 0,
+          "Reel Types": "None",
           "Date Submitted": new Date().toISOString()
         };
 
@@ -651,7 +537,6 @@
         if (response.ok) {
           builderForm.classList.add('hidden');
           document.getElementById('builder-success').classList.remove('hidden');
-          updateNav(); // Hide nav buttons
         } else {
           alert("Something went wrong. Please try again.");
           submitBtn.innerText = originalText;
@@ -668,9 +553,161 @@
     });
   }
 
-  // Init
-  if (steps[0]) {
-    renderStep();
+  // ─── FAQ ACCORDION ────────────────────────────
+  const faqItems = document.querySelectorAll('.faq__item');
+  faqItems.forEach(item => {
+    const header = item.querySelector('.faq__header');
+    const body = item.querySelector('.faq__body');
+    const icon = item.querySelector('.faq__icon');
+
+    header.addEventListener('click', () => {
+      const isActive = item.classList.contains('faq__item--active');
+
+      // Collapse all active FAQ items
+      faqItems.forEach(otherItem => {
+        if (otherItem !== item && otherItem.classList.contains('faq__item--active')) {
+          otherItem.classList.remove('faq__item--active');
+          otherItem.querySelector('.faq__header').setAttribute('aria-expanded', 'false');
+          otherItem.querySelector('.faq__body').style.maxHeight = '0';
+          otherItem.querySelector('.faq__icon').textContent = '+';
+        }
+      });
+
+      // Toggle current item
+      if (isActive) {
+        item.classList.remove('faq__item--active');
+        header.setAttribute('aria-expanded', 'false');
+        body.style.maxHeight = '0';
+        icon.textContent = '+';
+      } else {
+        item.classList.add('faq__item--active');
+        header.setAttribute('aria-expanded', 'true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        icon.textContent = '–';
+      }
+    });
+  });
+
+  // ─── HERO SCROLL TEXT SCRUB ───────────────────────────
+  const heroTrack = document.getElementById('hero-track');
+  const scrollContainer = document.getElementById('scroll-container');
+  const heroFirst = document.querySelector('.hero__content--first');
+  const heroSecond = document.querySelector('.hero__content--second');
+
+  if (heroTrack && scrollContainer && heroFirst && heroSecond) {
+    scrollContainer.addEventListener('scroll', () => {
+      const rect = heroTrack.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
+      
+      const offsetTop = rect.top - containerRect.top;
+      const totalScrollable = rect.height - containerRect.height;
+
+      if (totalScrollable > 0) {
+        let progress = -offsetTop / totalScrollable;
+        progress = Math.max(0, Math.min(1, progress));
+
+        // Text 1: Progress 0.0 -> 0.45 fade out
+        if (progress <= 0.45) {
+          const t1Progress = progress / 0.45; // 0 to 1
+          heroFirst.style.opacity = (1 - t1Progress).toFixed(3);
+          heroFirst.style.transform = `translate(-50%, -50%) translateY(-${t1Progress * 40}px) scale(${1 - t1Progress * 0.05})`;
+          heroFirst.style.visibility = 'visible';
+        } else {
+          heroFirst.style.opacity = '0';
+          heroFirst.style.visibility = 'hidden';
+        }
+
+        // Text 2: Progress 0.55 -> 1.0 fade in
+        if (progress >= 0.55) {
+          const t2Progress = (progress - 0.55) / 0.45; // 0 to 1
+          heroSecond.style.opacity = t2Progress.toFixed(3);
+          heroSecond.style.transform = `translate(-50%, -50%) translateY(${(1 - t2Progress) * 40}px) scale(${0.95 + t2Progress * 0.05})`;
+          heroSecond.style.visibility = 'visible';
+        } else {
+          heroSecond.style.opacity = '0';
+          heroSecond.style.visibility = 'hidden';
+        }
+      }
+    });
+  }
+
+  // ─── FOOTER LOGO SCROLL SCRUB ──────────────────────────
+  const footerLogo = document.getElementById('footer-logo');
+  const packagesTrack = document.getElementById('packages-track');
+  const builderContainer = document.querySelector('.builder__container');
+  const footerLinks = document.getElementById('footer-links');
+  const builderGlow = document.querySelector('.builder__glow');
+
+  if (footerLogo && packagesTrack && scrollContainer) {
+    scrollContainer.addEventListener('scroll', () => {
+
+      const rect = packagesTrack.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
+      
+      const offsetTop = rect.top - containerRect.top;
+      const totalScrollable = rect.height - containerRect.height;
+
+      if (totalScrollable > 0) {
+        let progress = -offsetTop / totalScrollable;
+        progress = Math.max(0, Math.min(1, progress));
+
+        // From progress 0.0 to 0.5: everything is normal (form visible, links at bottom)
+        // From progress 0.5 to 1.0: fade out form, slide logo + links to center
+        if (progress <= 0.5) {
+          if (builderContainer) {
+            builderContainer.style.opacity = '1';
+            builderContainer.style.transform = 'translateY(0px)';
+          }
+          if (builderGlow) {
+            builderGlow.style.opacity = '1';
+          }
+          if (footerLinks) {
+            footerLinks.style.setProperty('--footer-links-y', '0px');
+            const orDiv = footerLinks.querySelector('.builder__divider');
+            if (orDiv) orDiv.style.opacity = '1';
+          }
+          footerLogo.style.setProperty('--logo-y', '0%');
+          footerLogo.style.setProperty('--logo-color', 'rgba(255, 255, 255, 0.04)');
+          footerLogo.style.setProperty('--logo-scale', '1');
+        } else {
+          // Normalize transition progress from 0.5 to 1.0
+          const tProgress = (progress - 0.5) / 0.5; // 0.0 to 1.0
+          
+          // Fade out form card and glow, and the OR divider
+          if (builderContainer) {
+            builderContainer.style.opacity = (1 - tProgress).toFixed(3);
+            builderContainer.style.transform = `translateY(-${tProgress * 60}px)`;
+          }
+          if (builderGlow) {
+            builderGlow.style.opacity = (1 - tProgress).toFixed(3);
+          }
+          
+          const orDivider = footerLinks ? footerLinks.querySelector('.builder__divider') : null;
+          if (orDivider) {
+            orDivider.style.opacity = (1 - tProgress).toFixed(3);
+          }
+
+          // Move footer links (Book a Call + socials) upward slightly
+          // Since they now start in the normal flow below the form, they don't need to travel as far
+          const linksTargetY = tProgress * -10; // vh upward
+          if (footerLinks) {
+            footerLinks.style.setProperty('--footer-links-y', `${linksTargetY.toFixed(2)}vh`);
+          }
+
+          // Move the logo above the center to balance the group
+          const targetY = tProgress * -55; // vh
+          footerLogo.style.setProperty('--logo-y', `${targetY.toFixed(2)}vh`);
+          
+          // Fade color to visible white
+          const alpha = 0.04 + tProgress * 0.66;
+          footerLogo.style.setProperty('--logo-color', `rgba(255, 255, 255, ${alpha.toFixed(3)})`);
+          
+          // Scale it up slightly
+          const scale = 1 + tProgress * 0.15;
+          footerLogo.style.setProperty('--logo-scale', `${scale.toFixed(3)}`);
+        }
+      }
+    });
   }
 
 })();
