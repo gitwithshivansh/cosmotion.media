@@ -5,6 +5,15 @@
 (function () {
   'use strict';
 
+  // ─── CLEAN URL PARAMETERS FROM ADDRESS BAR ────────────
+  if (window.history && window.history.replaceState) {
+    const url = new URL(window.location.href);
+    if (url.search) {
+      url.search = '';
+      window.history.replaceState({}, document.title, url.toString());
+    }
+  }
+
   // ─── SHOOTING STARS CANVAS ────────────────────────────
   const canvas = document.getElementById('stars-canvas');
   const ctx = canvas.getContext('2d');
