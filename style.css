@@ -1630,8 +1630,18 @@ body::before {
 }
 
 @media (max-width: 768px) {
+  .packages-sticky-track {
+    height: auto !important;
+    min-height: auto !important;
+  }
   .packages-sticky-viewport {
-    height: 100dvh !important;
+    position: relative !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+    padding-top: 4rem !important;
+    padding-bottom: 5rem !important; /* Extra padding for bottom logo */
   }
   .section--builder {
     padding-bottom: 1rem !important;
@@ -1641,17 +1651,10 @@ body::before {
     padding: 1rem 1.2rem !important;
     border-radius: 14px !important;
     max-width: 92% !important;
-    max-height: 50dvh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  
-  .builder__container::-webkit-scrollbar {
-    width: 4px;
-  }
-  .builder__container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    max-height: none !important;
+    overflow-y: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
   .builder__heading {
     margin-bottom: 0.6rem !important;
@@ -1673,15 +1676,23 @@ body::before {
   }
   .builder__divider {
     margin: 0.5rem 0 !important;
+    opacity: 1 !important;
   }
   .footer-links {
     margin-top: 0.8rem !important;
     padding: 0 !important;
     max-width: 100% !important;
     gap: 0.5rem !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
   .section__socials {
     margin-top: 0.6rem !important;
+    opacity: 1 !important;
+  }
+  .site-logo--halfcut {
+    transform: translateX(-50%) translateY(0) scale(1) !important;
+    opacity: 0.04 !important;
   }
   .btn-book-call-bottom {
     padding: 0.7em 2em !important;
