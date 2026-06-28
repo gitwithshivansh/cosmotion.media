@@ -1641,6 +1641,17 @@ body::before {
     padding: 1rem 1.2rem !important;
     border-radius: 14px !important;
     max-width: 92% !important;
+    max-height: 50dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  
+  .builder__container::-webkit-scrollbar {
+    width: 4px;
+  }
+  .builder__container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
   }
   .builder__heading {
     margin-bottom: 0.6rem !important;
@@ -1703,4 +1714,18 @@ body::before {
     width: 14px !important;
     height: 14px !important;
   }
+}
+
+/* Hardware acceleration to prevent text flickering on mobile scroll animations */
+.hero__content--first,
+.hero__content--second,
+.builder__container,
+.footer-links,
+.site-logo--halfcut,
+.site-logo {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
 }
