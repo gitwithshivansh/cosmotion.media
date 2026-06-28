@@ -588,22 +588,55 @@
     });
   });
 
-  // ─── HERO SCROLL TEXT SCRUB ───────────────────────────
-  const heroTrack = document.getElementById('hero-track');
+  // ─── OPTIMIZED SCROLL-LINKED ANIMATIONS ─────────────────
   const scrollContainer = document.getElementById('scroll-container');
+  const heroTrack = document.getElementById('hero-track');
   const heroFirst = document.querySelector('.hero__content--first');
   const heroSecond = document.querySelector('.hero__content--second');
+  const footerLogo = document.getElementById('footer-logo');
+  const packagesTrack = document.getElementById('packages-track');
+  const builderContainer = document.querySelector('.builder__container');
+  const footerLinks = document.getElementById('footer-links');
+  const builderGlow = document.querySelector('.builder__glow');
 
-  if (heroTrack && scrollContainer && heroFirst && heroSecond) {
-    scrollContainer.addEventListener('scroll', () => {
-      const rect = heroTrack.getBoundingClientRect();
-      const containerRect = scrollContainer.getBoundingClientRect();
-      
-      const offsetTop = rect.top - containerRect.top;
-      const totalScrollable = rect.height - containerRect.height;
+  // Cache layout variables to prevent layout thrashing (getBoundingClientRect)
+  let containerHeight = 0;
+  let heroTrackHeight = 0;
+  let heroTrackOffsetTop = 0;
+  let packagesTrackHeight = 0;
+  let packagesTrackOffsetTop = 0;
 
-      if (totalScrollable > 0) {
-        let progress = -offsetTop / totalScrollable;
+  function recalculateLayout() {
+    if (scrollContainer) {
+      containerHeight = scrollContainer.clientHeight;
+    }
+    if (heroTrack) {
+      heroTrackHeight = heroTrack.offsetHeight;
+      heroTrackOffsetTop = heroTrack.offsetTop;
+    }
+    if (packagesTrack) {
+      packagesTrackHeight = packagesTrack.offsetHeight;
+      packagesTrackOffsetTop = packagesTrack.offsetTop;
+    }
+  }
+
+  // Recalculate on load and resize
+  window.addEventListener('load', recalculateLayout);
+  window.addEventListener('resize', recalculateLayout);
+  recalculateLayout();
+
+  let ticking = false;
+
+  function updateAnimations() {
+    if (!scrollContainer) return;
+    const scrollTop = scrollContainer.scrollTop;
+
+    // 1. Hero Scroll Text Scrub
+    if (heroTrack && heroFirst && heroSecond) {
+      const totalScrollableHero = heroTrackHeight - containerHeight;
+      if (totalScrollableHero > 0) {
+        const relativeScrollHero = scrollTop - heroTrackOffsetTop;
+        let progress = relativeScrollHero / totalScrollableHero;
         progress = Math.max(0, Math.min(1, progress));
 
         // Text 1: Progress 0.0 -> 0.45 fade out
@@ -628,31 +661,16 @@
           heroSecond.style.visibility = 'hidden';
         }
       }
-    });
-  }
+    }
 
-  // ─── FOOTER LOGO SCROLL SCRUB ──────────────────────────
-  const footerLogo = document.getElementById('footer-logo');
-  const packagesTrack = document.getElementById('packages-track');
-  const builderContainer = document.querySelector('.builder__container');
-  const footerLinks = document.getElementById('footer-links');
-  const builderGlow = document.querySelector('.builder__glow');
-
-  if (footerLogo && packagesTrack && scrollContainer) {
-    scrollContainer.addEventListener('scroll', () => {
-
-      const rect = packagesTrack.getBoundingClientRect();
-      const containerRect = scrollContainer.getBoundingClientRect();
-      
-      const offsetTop = rect.top - containerRect.top;
-      const totalScrollable = rect.height - containerRect.height;
-
-      if (totalScrollable > 0) {
-        let progress = -offsetTop / totalScrollable;
+    // 2. Footer Logo Scroll Scrub
+    if (footerLogo && packagesTrack) {
+      const totalScrollablePackages = packagesTrackHeight - containerHeight;
+      if (totalScrollablePackages > 0) {
+        const relativeScrollPackages = scrollTop - packagesTrackOffsetTop;
+        let progress = relativeScrollPackages / totalScrollablePackages;
         progress = Math.max(0, Math.min(1, progress));
 
-        // From progress 0.0 to 0.5: everything is normal (form visible, links at bottom)
-        // From progress 0.5 to 1.0: fade out form, slide logo + links to center
         if (progress <= 0.5) {
           if (builderContainer) {
             builderContainer.style.opacity = '1';
@@ -670,10 +688,8 @@
           footerLogo.style.setProperty('--logo-color', 'rgba(255, 255, 255, 0.04)');
           footerLogo.style.setProperty('--logo-scale', '1');
         } else {
-          // Normalize transition progress from 0.5 to 1.0
           const tProgress = (progress - 0.5) / 0.5; // 0.0 to 1.0
           
-          // Fade out form card and glow, and the OR divider
           if (builderContainer) {
             builderContainer.style.opacity = (1 - tProgress).toFixed(3);
             builderContainer.style.transform = `translateY(-${tProgress * 60}px)`;
@@ -687,27 +703,34 @@
             orDivider.style.opacity = (1 - tProgress).toFixed(3);
           }
 
-          // Move footer links (Book a Call + socials) upward slightly
-          // Since they now start in the normal flow below the form, they don't need to travel as far
-          const linksTargetY = tProgress * -10; // vh upward
+          const linksTargetY = tProgress * -10;
           if (footerLinks) {
             footerLinks.style.setProperty('--footer-links-y', `${linksTargetY.toFixed(2)}vh`);
           }
 
-          // Move the logo above the center to balance the group
-          const targetY = tProgress * -55; // vh
+          const targetY = tProgress * -55;
           footerLogo.style.setProperty('--logo-y', `${targetY.toFixed(2)}vh`);
           
-          // Fade color to visible white
           const alpha = 0.04 + tProgress * 0.66;
           footerLogo.style.setProperty('--logo-color', `rgba(255, 255, 255, ${alpha.toFixed(3)})`);
           
-          // Scale it up slightly
           const scale = 1 + tProgress * 0.15;
           footerLogo.style.setProperty('--logo-scale', `${scale.toFixed(3)}`);
         }
       }
-    });
+    }
+  }
+
+  if (scrollContainer) {
+    scrollContainer.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateAnimations();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true }); // passive: true optimizes touch scroll performance
   }
 
 })();
