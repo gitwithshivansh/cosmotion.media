@@ -310,11 +310,27 @@
                 }
               }
 
+              function unmutePlayer() {
+                if (ytPlayer && typeof ytPlayer.unMute === 'function') {
+                  ytPlayer.unMute();
+                  const muteBtn = document.querySelector(`.video-mute-btn[data-player="${playerId}"]`);
+                  if (muteBtn) {
+                    muteBtn.dataset.muted = "false";
+                    muteBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+                  }
+                }
+              }
+
               // Toggle play/pause when clicking the transparent video shield covering the iframe
               const wrapper = iframe.closest('.video-wrapper');
               const shield = wrapper ? wrapper.querySelector('.video-shield') : null;
               if (shield) {
                 shield.addEventListener('click', function() {
+                  // Fade out thumbnail on first interaction
+                  const thumb = wrapper ? wrapper.querySelector('.video-thumbnail') : null;
+                  if (thumb && !thumb.classList.contains('hidden')) {
+                    thumb.classList.add('hidden');
+                  }
                   const state = ytPlayer.getPlayerState();
                   const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
                   if (state === 1) { // playing
@@ -324,6 +340,7 @@
                       playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
                     }
                   } else {
+                    unmutePlayer();
                     ytPlayer.playVideo();
                     if (playBtn) {
                       playBtn.dataset.playing = "true";
@@ -361,6 +378,7 @@
                     playBtn.dataset.playing = "false";
                     playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
                   } else {
+                    unmutePlayer();
                     ytPlayer.playVideo();
                     playBtn.dataset.playing = "true";
                     playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
@@ -416,6 +434,14 @@
                 event.target.setPlaybackQuality('highres');
                 event.target.setPlaybackQuality('hd1080');
                 
+                // Fade out thumbnail when video starts playing
+                const iframeElement = document.getElementById(playerId);
+                const wrapperElement = iframeElement ? iframeElement.closest('.video-wrapper') : null;
+                const thumbElement = wrapperElement ? wrapperElement.querySelector('.video-thumbnail') : null;
+                if (thumbElement && !thumbElement.classList.contains('hidden')) {
+                  thumbElement.classList.add('hidden');
+                }
+                
                 // Update Play Icon to Pause
                 if (playBtn) {
                   playBtn.dataset.playing = "true";
@@ -468,66 +494,7 @@
       document.body.appendChild(tag);
   }
 
-  // ─── CONTACT FORM SUBMIT ──────────────────────────────
-  const builderForm = document.getElementById('builder-form');
-  if (builderForm) {
-    builderForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const submitBtn = builderForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerText;
-      submitBtn.innerText = "Sending...";
-      submitBtn.classList.add('disabled');
-      submitBtn.disabled = true;
 
-      const referenceEl = document.getElementById('b-reference');
-      const selectedService = document.getElementById('b-service').value || "None";
-      
-      // Prepare data to send
-      const formData = {
-        access_key: "ce3e34d8-510c-4f5e-ad13-46e543c56946",
-        subject: "New Custom Quote Request",
-        from_name: "Antigravity Quote Request",
-        name: document.getElementById('b-name').value,
-        email: document.getElementById('b-email').value,
-        company: document.getElementById('b-company').value,
-        reference_links: referenceEl ? referenceEl.value : "None provided",
-        message: document.getElementById('b-message').value,
-        selected_service: selectedService,
-        selected_package: "None",
-        reel_count: "None",
-        reel_types: "None"
-      };
- 
-      try {
-        // Send data to Web3Forms for email notification
-        const response = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify(formData)
-        });
-
-        if (response.ok) {
-          builderForm.classList.add('hidden');
-          document.getElementById('builder-success').classList.remove('hidden');
-        } else {
-          alert("Something went wrong. Please try again.");
-          submitBtn.innerText = originalText;
-          submitBtn.classList.remove('disabled');
-          submitBtn.disabled = false;
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Network error. Please check your connection and try again.");
-        submitBtn.innerText = originalText;
-        submitBtn.classList.remove('disabled');
-        submitBtn.disabled = false;
-      }
-    });
-  }
 
   // ─── FAQ ACCORDION ────────────────────────────
   const faqItems = document.querySelectorAll('.faq__item');
@@ -560,6 +527,56 @@
         header.setAttribute('aria-expanded', 'true');
         body.style.maxHeight = body.scrollHeight + 'px';
         icon.textContent = '–';
+      }
+    });
+  });
+
+  // ─── VIDEO ENLARGE/FULLSCREEN TOGGLE ─────────────────
+  const enlargeBtns = document.querySelectorAll('.video-enlarge-btn');
+  enlargeBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Avoid triggering parent shield click events
+      const wrapper = btn.closest('.video-wrapper');
+      if (wrapper) {
+        const isEnlarged = wrapper.classList.toggle('is-enlarged');
+        
+        // Toggle body class to handle scroll lock and parent CSS transforms bug
+        if (isEnlarged) {
+          document.body.classList.add('has-enlarged-video');
+        } else {
+          const otherEnlarged = document.querySelector('.video-wrapper.is-enlarged');
+          if (!otherEnlarged) {
+            document.body.classList.remove('has-enlarged-video');
+          }
+        }
+        
+        // Toggle the SVG icon between maximize and minimize
+        if (isEnlarged) {
+          btn.innerHTML = `
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 14 10 14 10 20"></polyline>
+              <polyline points="20 10 14 10 14 4"></polyline>
+              <line x1="14" y1="10" x2="21" y2="3"></line>
+              <line x1="10" y1="14" x2="3" y2="21"></line>
+            </svg>
+          `;
+          btn.setAttribute('aria-label', 'Exit full screen');
+        } else {
+          btn.innerHTML = `
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+          `;
+          btn.setAttribute('aria-label', 'Enlarge video');
+        }
+        
+        // Force layout recalculation since dimensions changed
+        if (typeof recalculateLayout === 'function') {
+          setTimeout(recalculateLayout, 100);
+        }
       }
     });
   });
@@ -635,63 +652,6 @@
         } else {
           heroSecond.style.opacity = '0';
           heroSecond.style.visibility = 'hidden';
-        }
-      }
-    }
-
-    // 2. Footer Logo Scroll Scrub
-    if (footerLogo && packagesTrack) {
-      const totalScrollablePackages = packagesTrackHeight - containerHeight;
-      if (totalScrollablePackages > 0) {
-        const relativeScrollPackages = scrollTop - packagesTrackOffsetTop;
-        let progress = relativeScrollPackages / totalScrollablePackages;
-        progress = Math.max(0, Math.min(1, progress));
-
-        if (progress <= 0.5) {
-          if (builderContainer) {
-            builderContainer.style.opacity = '1';
-            builderContainer.style.transform = 'translateY(0px)';
-          }
-          if (builderGlow) {
-            builderGlow.style.opacity = '1';
-          }
-          if (footerLinks) {
-            footerLinks.style.setProperty('--footer-links-y', '0px');
-            const orDiv = footerLinks.querySelector('.builder__divider');
-            if (orDiv) orDiv.style.opacity = '1';
-          }
-          footerLogo.style.setProperty('--logo-y', '0%');
-          footerLogo.style.setProperty('--logo-color', 'rgba(255, 255, 255, 0.04)');
-          footerLogo.style.setProperty('--logo-scale', '1');
-        } else {
-          const tProgress = (progress - 0.5) / 0.5; // 0.0 to 1.0
-          
-          if (builderContainer) {
-            builderContainer.style.opacity = (1 - tProgress).toFixed(3);
-            builderContainer.style.transform = `translateY(-${tProgress * 60}px)`;
-          }
-          if (builderGlow) {
-            builderGlow.style.opacity = (1 - tProgress).toFixed(3);
-          }
-          
-          const orDivider = footerLinks ? footerLinks.querySelector('.builder__divider') : null;
-          if (orDivider) {
-            orDivider.style.opacity = (1 - tProgress).toFixed(3);
-          }
-
-          const linksTargetY = tProgress * -10;
-          if (footerLinks) {
-            footerLinks.style.setProperty('--footer-links-y', `${linksTargetY.toFixed(2)}vh`);
-          }
-
-          const targetY = tProgress * -55;
-          footerLogo.style.setProperty('--logo-y', `${targetY.toFixed(2)}vh`);
-          
-          const alpha = 0.04 + tProgress * 0.66;
-          footerLogo.style.setProperty('--logo-color', `rgba(255, 255, 255, ${alpha.toFixed(3)})`);
-          
-          const scale = 1 + tProgress * 0.15;
-          footerLogo.style.setProperty('--logo-scale', `${scale.toFixed(3)}`);
         }
       }
     }

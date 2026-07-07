@@ -4,12 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>COSMOTION</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta name="theme-color" content="#141223">
   <meta name="description" content="We Direct and Produce Explainer and Launch Films for Tech and SaaS.">
   <meta property="og:title" content="COSMOTION">
   <meta property="og:description" content="We Direct and Produce Explainer and Launch Films for Tech and SaaS.">
   <meta property="og:url" content="https://www.cosmotion.media/">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="style.css?v=5.3">
+  <link rel="stylesheet" href="style.css?v=7.5">
+  <link rel="preconnect" href="https://calendly.com">
+  <link rel="preconnect" href="https://assets.calendly.com">
+  <link rel="preload" href="https://assets.calendly.com/assets/external/widget.js" as="script">
+  <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" defer></script>
 
 </head>
 <body>
@@ -49,103 +55,208 @@
 
     <!-- Section 2 — Product Launch Film -->
     <section id="launch-film-custom" class="section section--video">
-      <div class="video-wrapper">
-        <!-- Placeholder Video -->
-        <iframe id="yt-player-launch" class="video-bg video-bg--yt"
-          src="https://www.youtube.com/embed/zpYT5F6WMVg?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-          frameborder="0"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          loading="lazy"
-          title="Product Launch Film"
-          aria-hidden="true"
-          tabindex="-1">
-        </iframe>
-        <div class="video-shield"></div>
-        <div class="video-overlay"></div>
-        <div class="video-info reveal">
-          <h2 class="video-title">Product Launch Film</h2>
-          <p class="video-subtitle">Launch films that make people feel your product.</p>
-        </div>
-        <div class="video-controls">
-          <button class="video-control-btn video-play-btn" data-player="yt-player-launch" data-playing="true" aria-label="Pause video">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-          </button>
-          <div class="video-timeline-container">
-            <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-launch" aria-label="Video timeline">
-            <span class="video-time" data-player="yt-player-launch">0:00 / 0:00</span>
+      <div class="video-portfolio__grid reveal">
+        <div class="video-wrapper">
+          <!-- Placeholder Video -->
+          <iframe id="yt-player-launch" class="video-bg video-bg--yt"
+            src="https://www.youtube.com/embed/zpYT5F6WMVg?autoplay=0&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&cc_load_policy=0&iv_load_policy=3"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            loading="lazy"
+            title="Product Launch Film"
+            aria-hidden="true"
+            tabindex="-1">
+          </iframe>
+          <img src="thumb-launch.jpg?v=1" alt="Launch Film Thumbnail" class="video-thumbnail" id="thumb-launch">
+          <div class="video-shield"></div>
+          <div class="video-overlay"></div>
+          <div class="video-info">
+            <h2 class="video-title">Product Launch Film</h2>
+            <p class="video-subtitle">Launch films that make people feel your product.</p>
           </div>
-          <button class="video-control-btn video-mute-btn" data-player="yt-player-launch" data-muted="true" aria-label="Unmute video">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-          </button>
+          <div class="video-controls">
+            <button class="video-control-btn video-play-btn" data-player="yt-player-launch" data-playing="false" aria-label="Play video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <div class="video-timeline-container">
+              <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-launch" aria-label="Video timeline">
+              <span class="video-time" data-player="yt-player-launch">0:00 / 0:00</span>
+            </div>
+            <button class="video-control-btn video-mute-btn" data-player="yt-player-launch" data-muted="true" aria-label="Unmute video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+            </button>
+            <button class="video-control-btn video-enlarge-btn" data-player="yt-player-launch" aria-label="Enlarge video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+                <line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="case-study__card">
+          <div class="case-study__badge">case study</div>
+          <h3 class="case-study__title">01 — Launch Film</h3>
+          
+          <div class="case-study__section">
+            <h4 class="case-study__label">SUMMARY</h4>
+            <p class="case-study__text">A story-first launch film that earns the product reveal rather than leading with it.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">CHALLENGE</h4>
+            <p class="case-study__text">Most launch videos open with the product. This one opens with a feeling — building context, tension, and perspective before anything is explained.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">IDEA</h4>
+            <p class="case-study__text">We built a narrative arc that gives the viewer a reason to care before they know what they're watching. By the time the product enters the frame, the audience is already invested.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">DELIVERABLES</h4>
+            <p class="case-study__deliverables">Creative direction &middot; Storyboarding &middot; Script direction &middot; Voiceover direction</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Section 3 — Video Showcase 1 -->
     <section id="showreel" class="section section--video">
-      <div class="video-wrapper">
-        <iframe id="yt-player-1" class="video-bg video-bg--yt"
-          src="https://www.youtube.com/embed/SsaZRNur5Ik?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-          frameborder="0"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          loading="lazy"
-          title="Velozity Product Video"
-          aria-hidden="true"
-          tabindex="-1">
-        </iframe>
-        <div class="video-shield"></div>
-        <div class="video-overlay"></div>
-        <div class="video-info reveal">
-          <h2 class="video-title">Product Explainer Video</h2>
-          <p class="video-subtitle">Videos that help <span>Velozity</span> pitch, sell, and onboard faster</p>
-        </div>
-        <div class="video-controls">
-          <button class="video-control-btn video-play-btn" data-player="yt-player-1" data-playing="true" aria-label="Pause video">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-          </button>
-          <div class="video-timeline-container">
-            <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-1" aria-label="Video timeline">
-            <span class="video-time" data-player="yt-player-1">0:00 / 0:00</span>
+      <div class="video-portfolio__grid reveal">
+        <div class="video-wrapper">
+          <iframe id="yt-player-1" class="video-bg video-bg--yt"
+            src="https://www.youtube.com/embed/SsaZRNur5Ik?autoplay=0&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&cc_load_policy=0&iv_load_policy=3"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            loading="lazy"
+            title="Velozity Product Video"
+            aria-hidden="true"
+            tabindex="-1">
+          </iframe>
+          <img src="thumb-explainer.jpg?v=1" alt="Product Explainer Thumbnail" class="video-thumbnail" id="thumb-explainer">
+          <div class="video-shield"></div>
+          <div class="video-overlay"></div>
+          <div class="video-info">
+            <h2 class="video-title">Product Explainer Video</h2>
+            <p class="video-subtitle">Videos that help <span>Velozity</span> pitch, sell, and onboard faster</p>
           </div>
-          <button class="video-control-btn video-mute-btn" data-player="yt-player-1" data-muted="true" aria-label="Unmute video">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-          </button>
+          <div class="video-controls">
+            <button class="video-control-btn video-play-btn" data-player="yt-player-1" data-playing="false" aria-label="Play video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <div class="video-timeline-container">
+              <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-1" aria-label="Video timeline">
+              <span class="video-time" data-player="yt-player-1">0:00 / 0:00</span>
+            </div>
+            <button class="video-control-btn video-mute-btn" data-player="yt-player-1" data-muted="true" aria-label="Unmute video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+            </button>
+            <button class="video-control-btn video-enlarge-btn" data-player="yt-player-1" aria-label="Enlarge video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+                <line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="case-study__card">
+          <div class="case-study__badge">case study</div>
+          <h3 class="case-study__title">02 — Product Explainer</h3>
+          
+          <div class="case-study__section">
+            <h4 class="case-study__label">SUMMARY</h4>
+            <p class="case-study__text">A product film built around one question — does the viewer actually understand what this does by the end?</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">CHALLENGE</h4>
+            <p class="case-study__text">Explaining a product without losing the viewer halfway through. Most explainer videos go too deep into features or stay too vague to mean anything.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">IDEA</h4>
+            <p class="case-study__text">We structured the film around the user first — their world, their problem, then the product. Capabilities are shown through context, not listed like a spec sheet.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">DELIVERABLES</h4>
+            <p class="case-study__deliverables">Creative direction &middot; Storyboarding &middot; Script direction &middot; Voiceover direction</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 3 — Video Showcase 2 -->
+    <!-- Section 4 — Video Showcase 2 -->
     <section id="brand-film" class="section section--video">
-      <div class="video-wrapper">
-        <iframe id="yt-player-2" class="video-bg video-bg--yt"
-          src="https://www.youtube.com/embed/F7wu34PtSn0?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-          frameborder="0"
-          allow="autoplay; encrypted-media"
-          allowfullscreen
-          loading="lazy"
-          title="SaaS Animation"
-          aria-hidden="true"
-          tabindex="-1">
-        </iframe>
-        <div class="video-shield"></div>
-        <div class="video-overlay"></div>
-        <div class="video-info reveal">
-          <h2 class="video-title gradient-text">SaaS Animation</h2>
-          <p class="video-subtitle">Perfect for short intros, ads and social media</p>
-        </div>
-        <div class="video-controls">
-          <button class="video-control-btn video-play-btn" data-player="yt-player-2" data-playing="true" aria-label="Pause video">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-          </button>
-          <div class="video-timeline-container">
-            <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-2" aria-label="Video timeline">
-            <span class="video-time" data-player="yt-player-2">0:00 / 0:00</span>
+      <div class="video-portfolio__grid reveal">
+        <div class="video-wrapper">
+          <iframe id="yt-player-2" class="video-bg video-bg--yt"
+            src="https://www.youtube.com/embed/F7wu34PtSn0?autoplay=0&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&cc_load_policy=0&iv_load_policy=3"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            loading="lazy"
+            title="SaaS Animation"
+            aria-hidden="true"
+            tabindex="-1">
+          </iframe>
+          <img src="thumb-animation.jpg?v=1" alt="SaaS Animation Thumbnail" class="video-thumbnail" id="thumb-animation">
+          <div class="video-shield"></div>
+          <div class="video-overlay"></div>
+          <div class="video-info">
+            <h2 class="video-title gradient-text">SaaS Animation</h2>
+            <p class="video-subtitle">Perfect for short intros, ads and social media</p>
           </div>
-          <button class="video-control-btn video-mute-btn" data-player="yt-player-2" data-muted="true" aria-label="Unmute video">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-          </button>
+          <div class="video-controls">
+            <button class="video-control-btn video-play-btn" data-player="yt-player-2" data-playing="false" aria-label="Play video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <div class="video-timeline-container">
+              <input type="range" class="video-timeline" min="0" max="100" value="0" data-player="yt-player-2" aria-label="Video timeline">
+              <span class="video-time" data-player="yt-player-2">0:00 / 0:00</span>
+            </div>
+            <button class="video-control-btn video-mute-btn" data-player="yt-player-2" data-muted="true" aria-label="Unmute video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+            </button>
+            <button class="video-control-btn video-enlarge-btn" data-player="yt-player-2" aria-label="Enlarge video">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+                <line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="case-study__card">
+          <div class="case-study__badge">case study</div>
+          <h3 class="case-study__title">03 — SaaS Animation</h3>
+          
+          <div class="case-study__section">
+            <h4 class="case-study__label">SUMMARY</h4>
+            <p class="case-study__text">A motion-first film exploring what SaaS interfaces look like when treated with the same intention as cinema.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">CHALLENGE</h4>
+            <p class="case-study__text">Most SaaS animations feel like screen recordings dressed up with transitions. We wanted to push further — into something that actually feels considered.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">IDEA</h4>
+            <p class="case-study__text">Using 3D elements and cinematic pacing, we built a visual language around the product's scope. Not just what it does, but the scale of what it makes possible.</p>
+          </div>
+
+          <div class="case-study__section">
+            <h4 class="case-study__label">DELIVERABLES</h4>
+            <p class="case-study__deliverables">Creative direction &middot; 3D animation &middot; Motion design &middot; Storyboarding &middot; Visual system</p>
+          </div>
         </div>
       </div>
     </section>
@@ -219,61 +330,36 @@
     <div id="packages-track" class="section packages-sticky-track">
       <section id="packages" class="packages-sticky-viewport section--builder">
         <div class="builder__glow"></div>
-      <div class="builder__container reveal">
-        
-        <div class="builder__step builder__step--active" id="step-3">
-          <h2 class="builder__heading">Let's collaborate and build something together</h2>
-          
-          <form class="builder__form" id="builder-form">
-            <div class="form__row">
-              <input type="text" id="b-name" placeholder="Name" required>
-              <input type="email" id="b-email" placeholder="Email" required>
-            </div>
-            
-            <select id="b-service" class="form__select" required>
-              <option value="" disabled selected hidden>Select Video Type</option>
-              <option value="Launch Film">Launch Film</option>
-              <option value="Product Explainer">Product Explainer</option>
-              <option value="SaaS Video">SaaS Video</option>
-            </select>
+        <div class="builder__container reveal">
+          <h2 class="builder__heading" style="text-align: center; margin-bottom: 1.5rem; color: var(--text-primary);">Book a Call</h2>
+          <!-- Calendly inline widget begin -->
+          <div class="calendly-inline-widget" data-url="https://calendly.com/cosmotion-media/30min?background_color=141223&text_color=ffffff&primary_color=9b80c3" style="min-width:320px;height:700px;width:100%;"></div>
+          <!-- Calendly inline widget end -->
+        </div>
 
-            <input type="text" id="b-company" placeholder="What best describes you?" required>
-            <textarea id="b-message" rows="2" placeholder="Describe about your project" required></textarea>
-            <button type="submit" class="btn btn--primary btn--full">Send Inquiry</button>
-            <p class="builder__disclaimer">We'll get back to you within 24 hours.</p>
-          </form>
-          <div class="builder__success hidden" id="builder-success">
-            <h3>We got your request. Talk soon.</h3>
+        <!-- Footer Links Group — animates with COSMOTION logo -->
+        <div class="footer-links" id="footer-links">
+          <div class="section__socials">
+            <a href="https://x.com/shivansh1872892?s=11" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="X">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
+                <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/cosmotion.media?igsh=czhweWtlZ2ZmdTd5&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/cosmotion-media/?viewAsMember=true" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
           </div>
         </div>
-
-      </div>
-
-      <!-- Footer Links Group — animates with COSMOTION logo -->
-      <div class="footer-links" id="footer-links">
-        <div class="builder__divider" style="width: 100%;"><span>OR</span></div>
-        <a href="https://calendly.com/cosmotion-media/30min" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--full btn-book-call-bottom">Book a Call</a>
-        <div class="section__socials">
-          <a href="https://x.com/shivansh1872892?s=11" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="X">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
-              <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
-            </svg>
-          </a>
-          <a href="https://www.instagram.com/cosmotion.media?igsh=czhweWtlZ2ZmdTd5&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="Instagram">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/company/cosmotion-media/?viewAsMember=true" target="_blank" rel="noopener noreferrer" class="social__icon" aria-label="LinkedIn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-        </div>
-      </div>
       <span class="site-logo--halfcut" id="footer-logo">COSMOTION</span>
     </section>
   </div>
 
   </main>
 
-  <script src="script.js?v=5.3"></script>
+  <script src="script.js?v=6.0"></script>
 </body>
 </html>
