@@ -274,23 +274,185 @@
       const seconds = Math.floor(sec % 60);
       return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
-    
-      iframes.forEach((iframe) => {
+
+    // ── Shared UI helpers ──────────────────────────────
+    function setPlayIcon(playBtn) {
+      if (!playBtn) return;
+      playBtn.dataset.playing = "false";
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
+    }
+
+    function setPauseIcon(playBtn) {
+      if (!playBtn) return;
+      playBtn.dataset.playing = "true";
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+    }
+
+    function setMuteIcon(muteBtn) {
+      if (!muteBtn) return;
+      muteBtn.dataset.muted = "true";
+      muteBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
+    }
+
+    function setUnmuteIcon(muteBtn) {
+      if (!muteBtn) return;
+      muteBtn.dataset.muted = "false";
+      muteBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+    }
+
+    iframes.forEach((iframe) => {
       const playerId = iframe.id;
-      if (playerId) {
-        players[playerId] = new YT.Player(playerId, {
-          events: {
-            'onReady': function(event) {
-              const ytPlayer = players[playerId];
-              // Force highest resolution (1080p / highres) so it buffers instead of auto-downscaling
+      if (!playerId) return;
+
+      players[playerId] = new YT.Player(playerId, {
+        events: {
+          'onReady': function(event) {
+            const ytPlayer = players[playerId];
+            event.target.setPlaybackQuality('highres');
+            event.target.setPlaybackQuality('hd1080');
+
+            const scrubber = document.querySelector(`.video-timeline[data-player="${playerId}"]`);
+            const timeDisplay = document.querySelector(`.video-time[data-player="${playerId}"]`);
+            const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
+            const muteBtn = document.querySelector(`.video-mute-btn[data-player="${playerId}"]`);
+            const wrapper = iframe.closest('.video-wrapper');
+            const shield = wrapper ? wrapper.querySelector('.video-shield') : null;
+            const thumb = wrapper ? wrapper.querySelector('.video-thumbnail') : null;
+
+            function startUpdateLoop() {
+              if (scrubberIntervals[playerId]) return;
+              scrubberIntervals[playerId] = setInterval(() => {
+                if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function' && typeof ytPlayer.getDuration === 'function') {
+                  const current = ytPlayer.getCurrentTime();
+                  const duration = ytPlayer.getDuration();
+                  if (duration > 0 && scrubber && timeDisplay) {
+                    scrubber.value = (current / duration) * 100;
+                    timeDisplay.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+                  }
+                }
+              }, 250);
+            }
+
+            function stopUpdateLoop() {
+              if (scrubberIntervals[playerId]) {
+                clearInterval(scrubberIntervals[playerId]);
+                delete scrubberIntervals[playerId];
+              }
+            }
+
+            function hideThumbnail() {
+              if (thumb && !thumb.classList.contains('hidden')) {
+                thumb.classList.add('hidden');
+              }
+            }
+
+            function unmuteAndPlay() {
+              // Unmute before playing (browser policy: muted autoplay is allowed, unmuted needs gesture)
+              if (ytPlayer && typeof ytPlayer.unMute === 'function') {
+                ytPlayer.unMute();
+                setUnmuteIcon(muteBtn);
+              }
+              ytPlayer.playVideo();
+            }
+
+            // Shield click: toggle play/pause
+            if (shield) {
+              shield.addEventListener('click', function() {
+                hideThumbnail();
+                const state = ytPlayer.getPlayerState();
+                if (state === YT.PlayerState.PLAYING) {
+                  ytPlayer.pauseVideo();
+                } else {
+                  unmuteAndPlay();
+                }
+                // UI is updated by onStateChange — do NOT update here
+              });
+            }
+
+            // Play button click: toggle play/pause
+            if (playBtn) {
+              playBtn.addEventListener('click', function() {
+                const state = ytPlayer.getPlayerState();
+                if (state === YT.PlayerState.PLAYING) {
+                  ytPlayer.pauseVideo();
+                } else {
+                  unmuteAndPlay();
+                }
+                // UI is updated by onStateChange — do NOT update here
+              });
+            }
+
+            // Mute button click
+            if (muteBtn) {
+              muteBtn.addEventListener('click', function() {
+                if (ytPlayer.isMuted()) {
+                  ytPlayer.unMute();
+                  setUnmuteIcon(muteBtn);
+                } else {
+                  ytPlayer.mute();
+                  setMuteIcon(muteBtn);
+                }
+              });
+            }
+
+            // Scrubber drag
+            if (scrubber) {
+              scrubber.addEventListener('input', function() {
+                stopUpdateLoop();
+                const pct = parseFloat(scrubber.value);
+                const duration = ytPlayer.getDuration();
+                if (duration > 0) {
+                  const targetSec = (pct / 100) * duration;
+                  if (timeDisplay) timeDisplay.textContent = `${formatTime(targetSec)} / ${formatTime(duration)}`;
+                  ytPlayer.seekTo(targetSec, false);
+                }
+              });
+
+              scrubber.addEventListener('change', function() {
+                const pct = parseFloat(scrubber.value);
+                const duration = ytPlayer.getDuration();
+                if (duration > 0) {
+                  ytPlayer.seekTo((pct / 100) * duration, true);
+                }
+                // Only restart loop if video is playing
+                if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                  startUpdateLoop();
+                }
+              });
+            }
+          },
+
+          'onStateChange': function(event) {
+            // onStateChange is the SINGLE SOURCE OF TRUTH for all UI updates
+            const ytPlayer = event.target;
+            const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
+            const scrubber = document.querySelector(`.video-timeline[data-player="${playerId}"]`);
+            const timeDisplay = document.querySelector(`.video-time[data-player="${playerId}"]`);
+            const iframeEl = document.getElementById(playerId);
+            const wrapperEl = iframeEl ? iframeEl.closest('.video-wrapper') : null;
+            const thumbEl = wrapperEl ? wrapperEl.querySelector('.video-thumbnail') : null;
+
+            if (event.data === YT.PlayerState.ENDED) {
+              // Keep showing pause icon during the loop restart (keep button as "playing")
+              setPauseIcon(playBtn);
+              ytPlayer.seekTo(0, true);
+              ytPlayer.playVideo();
+              return;
+            }
+
+            if (event.data === YT.PlayerState.PLAYING) {
               event.target.setPlaybackQuality('highres');
               event.target.setPlaybackQuality('hd1080');
-              
-              const scrubber = document.querySelector(`.video-timeline[data-player="${playerId}"]`);
-              const timeDisplay = document.querySelector(`.video-time[data-player="${playerId}"]`);
 
-              function startUpdateLoop() {
-                if (scrubberIntervals[playerId]) return;
+              // Hide thumbnail
+              if (thumbEl && !thumbEl.classList.contains('hidden')) {
+                thumbEl.classList.add('hidden');
+              }
+
+              setPauseIcon(playBtn);
+
+              // Start scrubber loop
+              if (!scrubberIntervals[playerId]) {
                 scrubberIntervals[playerId] = setInterval(() => {
                   if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function' && typeof ytPlayer.getDuration === 'function') {
                     const current = ytPlayer.getCurrentTime();
@@ -303,184 +465,30 @@
                 }, 250);
               }
 
-              function stopUpdateLoop() {
-                if (scrubberIntervals[playerId]) {
-                  clearInterval(scrubberIntervals[playerId]);
-                  delete scrubberIntervals[playerId];
-                }
+            } else if (event.data === YT.PlayerState.PAUSED) {
+              setPlayIcon(playBtn);
+              if (scrubberIntervals[playerId]) {
+                clearInterval(scrubberIntervals[playerId]);
+                delete scrubberIntervals[playerId];
+              }
+              // Restore thumbnail on pause to cover the native YouTube play button overlay
+              if (thumbEl && thumbEl.classList.contains('hidden')) {
+                thumbEl.classList.remove('hidden');
               }
 
-              function unmutePlayer() {
-                if (ytPlayer && typeof ytPlayer.unMute === 'function') {
-                  ytPlayer.unMute();
-                  const muteBtn = document.querySelector(`.video-mute-btn[data-player="${playerId}"]`);
-                  if (muteBtn) {
-                    muteBtn.dataset.muted = "false";
-                    muteBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
-                  }
-                }
-              }
-
-              // Toggle play/pause when clicking the transparent video shield covering the iframe
-              const wrapper = iframe.closest('.video-wrapper');
-              const shield = wrapper ? wrapper.querySelector('.video-shield') : null;
-              if (shield) {
-                shield.addEventListener('click', function() {
-                  // Fade out thumbnail on first interaction
-                  const thumb = wrapper ? wrapper.querySelector('.video-thumbnail') : null;
-                  if (thumb && !thumb.classList.contains('hidden')) {
-                    thumb.classList.add('hidden');
-                  }
-                  const state = ytPlayer.getPlayerState();
-                  const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
-                  if (state === 1) { // playing
-                    ytPlayer.pauseVideo();
-                    if (playBtn) {
-                      playBtn.dataset.playing = "false";
-                      playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
-                    }
-                  } else {
-                    unmutePlayer();
-                    ytPlayer.playVideo();
-                    if (playBtn) {
-                      playBtn.dataset.playing = "true";
-                      playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-                    }
-                  }
-                });
-              }
-
-
-              // Mute Toggle Logic
-              const muteBtn = document.querySelector(`.video-mute-btn[data-player="${playerId}"]`);
-              if (muteBtn) {
-                muteBtn.addEventListener('click', function() {
-                  if (ytPlayer.isMuted()) {
-                    ytPlayer.unMute();
-                    muteBtn.dataset.muted = "false";
-                    muteBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
-                  } else {
-                    ytPlayer.mute();
-                    muteBtn.dataset.muted = "true";
-                    muteBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
-                  }
-                });
-              }
-
-              // Play/Pause Toggle Logic
-              const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
-              if (playBtn) {
-                playBtn.addEventListener('click', function() {
-                  const state = ytPlayer.getPlayerState();
-                  // state 1 is PLAYING
-                  if (state === 1) {
-                    ytPlayer.pauseVideo();
-                    playBtn.dataset.playing = "false";
-                    playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
-                  } else {
-                    unmutePlayer();
-                    ytPlayer.playVideo();
-                    playBtn.dataset.playing = "true";
-                    playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-                  }
-                });
-              }
-
-              // Scrubber Drag Event Listeners
-              if (scrubber) {
-                scrubber.addEventListener('input', function() {
-                  stopUpdateLoop();
-                  const pct = parseFloat(scrubber.value);
-                  const duration = ytPlayer.getDuration();
-                  if (duration > 0) {
-                    const targetSec = (pct / 100) * duration;
-                    if (timeDisplay) {
-                      timeDisplay.textContent = `${formatTime(targetSec)} / ${formatTime(duration)}`;
-                    }
-                    // Seek immediately (allowSeekAhead=false is fast and performs local seeking within buffered data)
-                    ytPlayer.seekTo(targetSec, false);
-                  }
-                });
-
-                scrubber.addEventListener('change', function() {
-                  const pct = parseFloat(scrubber.value);
-                  const duration = ytPlayer.getDuration();
-                  if (duration > 0) {
-                    const targetSec = (pct / 100) * duration;
-                    // Final seek (allowSeekAhead=true requests a fresh keyframe at the release coordinate)
-                    ytPlayer.seekTo(targetSec, true);
-                  }
-                  startUpdateLoop();
-                });
-              }
-
-              // Initial update loop check
-              if (ytPlayer.getPlayerState() === 1) {
-                startUpdateLoop();
-              }
-            },
-            'onStateChange': function(event) {
-              const ytPlayer = event.target;
-              const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
-              
-              if (event.data === YT.PlayerState.ENDED) {
-                // Programmatic Loop to avoid using playlist URL parameters (which cause skip button overlays on mobile)
-                ytPlayer.seekTo(0);
-                ytPlayer.playVideo();
-                return;
-              }
-
-              if (event.data === YT.PlayerState.PLAYING) {
-                event.target.setPlaybackQuality('highres');
-                event.target.setPlaybackQuality('hd1080');
-                
-                // Fade out thumbnail when video starts playing
-                const iframeElement = document.getElementById(playerId);
-                const wrapperElement = iframeElement ? iframeElement.closest('.video-wrapper') : null;
-                const thumbElement = wrapperElement ? wrapperElement.querySelector('.video-thumbnail') : null;
-                if (thumbElement && !thumbElement.classList.contains('hidden')) {
-                  thumbElement.classList.add('hidden');
-                }
-                
-                // Update Play Icon to Pause
-                if (playBtn) {
-                  playBtn.dataset.playing = "true";
-                  playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-                }
-
-                // Start updating scrubber
-                const scrubber = document.querySelector(`.video-timeline[data-player="${playerId}"]`);
-                const timeDisplay = document.querySelector(`.video-time[data-player="${playerId}"]`);
-                
-                if (!scrubberIntervals[playerId]) {
-                  scrubberIntervals[playerId] = setInterval(() => {
-                    if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function' && typeof ytPlayer.getDuration === 'function') {
-                      const current = ytPlayer.getCurrentTime();
-                      const duration = ytPlayer.getDuration();
-                      if (duration > 0 && scrubber && timeDisplay) {
-                        scrubber.value = (current / duration) * 100;
-                        timeDisplay.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
-                      }
-                    }
-                  }, 250);
-                }
-              } else {
-                // Update Play Icon to Play
-                if (playBtn && event.data !== YT.PlayerState.BUFFERING) {
-                  playBtn.dataset.playing = "false";
-                  playBtn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
-                }
-
-                // Stop updating scrubber
-                if (scrubberIntervals[playerId]) {
-                  clearInterval(scrubberIntervals[playerId]);
-                  delete scrubberIntervals[playerId];
-                }
+            } else if (event.data === YT.PlayerState.BUFFERING) {
+              // Keep current icon during buffering — do not reset to play
+            } else {
+              // Unstarted (-1) or cued (5)
+              setPlayIcon(playBtn);
+              if (scrubberIntervals[playerId]) {
+                clearInterval(scrubberIntervals[playerId]);
+                delete scrubberIntervals[playerId];
               }
             }
           }
-        });
-      }
+        }
+      });
     });
   };
 
@@ -488,11 +496,13 @@
   var tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName('script')[0];
-  if(firstScriptTag) {
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  if (firstScriptTag) {
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   } else {
-      document.body.appendChild(tag);
+    document.body.appendChild(tag);
   }
+
+
 
 
 
