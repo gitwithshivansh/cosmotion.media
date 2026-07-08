@@ -449,6 +449,12 @@
                 thumbEl.classList.add('hidden');
               }
 
+              // Hide video info
+              const infoEl = wrapperEl ? wrapperEl.querySelector('.video-info') : null;
+              if (infoEl && !infoEl.classList.contains('hidden')) {
+                infoEl.classList.add('hidden');
+              }
+
               setPauseIcon(playBtn);
 
               // Start scrubber loop
@@ -470,10 +476,6 @@
               if (scrubberIntervals[playerId]) {
                 clearInterval(scrubberIntervals[playerId]);
                 delete scrubberIntervals[playerId];
-              }
-              // Restore thumbnail on pause to cover the native YouTube play button overlay
-              if (thumbEl && thumbEl.classList.contains('hidden')) {
-                thumbEl.classList.remove('hidden');
               }
 
             } else if (event.data === YT.PlayerState.BUFFERING) {
