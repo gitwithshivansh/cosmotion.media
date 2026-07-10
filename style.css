@@ -384,11 +384,11 @@ body::before {
 }
 
 .video-wrapper.is-enlarged .video-bg--yt {
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: calc(100% + 12px) !important;
-  transform: none !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 125% !important;
+  height: 125% !important;
+  transform: translate(-50%, -50%) !important;
 }
 
 /* Scroll Lock and CSS Transform Bugfix for Fullscreen Video Player */
@@ -499,10 +499,11 @@ body.has-enlarged-video .reveal {
 
 .video-bg--yt {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100% + 12px);
+  top: 50%;
+  left: 50%;
+  width: 125%;
+  height: 125%;
+  transform: translate(-50%, -50%);
   border: none;
   pointer-events: none;
   z-index: 1;
