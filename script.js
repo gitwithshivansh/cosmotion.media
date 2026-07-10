@@ -311,6 +311,12 @@
             event.target.setPlaybackQuality('highres');
             event.target.setPlaybackQuality('hd1080');
 
+            // Programmatically disable YouTube closed captions / subtitles on load
+            if (ytPlayer && typeof ytPlayer.unloadModule === 'function') {
+              ytPlayer.unloadModule("captions");
+              ytPlayer.unloadModule("cc");
+            }
+
             const scrubber = document.querySelector(`.video-timeline[data-player="${playerId}"]`);
             const timeDisplay = document.querySelector(`.video-time[data-player="${playerId}"]`);
             const playBtn = document.querySelector(`.video-play-btn[data-player="${playerId}"]`);
@@ -340,9 +346,16 @@
               }
             }
 
-            function hideThumbnail() {
+            function hideStartOverlays() {
+              if (wrapper) {
+                wrapper.dataset.interacted = "true";
+              }
               if (thumb && !thumb.classList.contains('hidden')) {
                 thumb.classList.add('hidden');
+              }
+              const infoEl = wrapper ? wrapper.querySelector('.video-info') : null;
+              if (infoEl && !infoEl.classList.contains('hidden')) {
+                infoEl.classList.add('hidden');
               }
             }
 
@@ -358,7 +371,7 @@
             // Shield click: toggle play/pause
             if (shield) {
               shield.addEventListener('click', function() {
-                hideThumbnail();
+                hideStartOverlays();
                 const state = ytPlayer.getPlayerState();
                 if (state === YT.PlayerState.PLAYING) {
                   ytPlayer.pauseVideo();
@@ -372,6 +385,7 @@
             // Play button click: toggle play/pause
             if (playBtn) {
               playBtn.addEventListener('click', function() {
+                hideStartOverlays();
                 const state = ytPlayer.getPlayerState();
                 if (state === YT.PlayerState.PLAYING) {
                   ytPlayer.pauseVideo();
@@ -444,15 +458,24 @@
               event.target.setPlaybackQuality('highres');
               event.target.setPlaybackQuality('hd1080');
 
-              // Hide thumbnail
-              if (thumbEl && !thumbEl.classList.contains('hidden')) {
-                thumbEl.classList.add('hidden');
+              // Programmatically disable YouTube closed captions / subtitles when starting to play
+              if (ytPlayer && typeof ytPlayer.unloadModule === 'function') {
+                ytPlayer.unloadModule("captions");
+                ytPlayer.unloadModule("cc");
               }
 
-              // Hide video info
-              const infoEl = wrapperEl ? wrapperEl.querySelector('.video-info') : null;
-              if (infoEl && !infoEl.classList.contains('hidden')) {
-                infoEl.classList.add('hidden');
+              // Only hide overlays if the user has explicitly interacted (prevents background pre-check play states from hiding titles on load)
+              if (wrapperEl && wrapperEl.dataset.interacted === "true") {
+                // Hide thumbnail
+                if (thumbEl && !thumbEl.classList.contains('hidden')) {
+                  thumbEl.classList.add('hidden');
+                }
+
+                // Hide video info
+                const infoEl = wrapperEl.querySelector('.video-info');
+                if (infoEl && !infoEl.classList.contains('hidden')) {
+                  infoEl.classList.add('hidden');
+                }
               }
 
               setPauseIcon(playBtn);
