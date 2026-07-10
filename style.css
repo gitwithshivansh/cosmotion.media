@@ -1977,6 +1977,14 @@ body.has-enlarged-video .reveal {
     padding: 0.5rem 1rem !important;
   }
 
+  /* Mobile-specific YouTube player crop ratios to hide touch-scaled native UI */
+  .video-bg--yt {
+    height: 165% !important;
+  }
+  .video-wrapper.is-enlarged .video-bg--yt {
+    height: 140% !important;
+  }
+
   /* Video & Case Study Cards Mobile Optimization */
   .section--video {
     padding: clamp(2.5rem, 5vh, 4rem) 0 !important;
